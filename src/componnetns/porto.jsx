@@ -1,13 +1,102 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './porto.css';
 import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// Tambahkan import AOS
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [darkMode, setDarkMode] = useState(true);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const sectionRefs = useRef({});
+
+const certificates = [
+    {
+      title: "Fundamental Networking",
+      issuer: "LEPKom UG",
+      date: "February 2022"
+    },
+    {
+      title: "Fundamental Desktop Programming",
+      issuer: "LEPKom UG",
+      date: "August 2022"
+    },
+    {
+      title: "Local Area Network Using Cisco Router",
+      issuer: "LEPKom UG",
+      date: "February 2023"
+    },
+    {
+      title: "Building Website using HTML5",
+      issuer: "LEPKom UG",
+      date: "May 2023"
+    },
+    {
+      title: "Java Programming for Beginner",
+      issuer: "LEPKom UG",
+      date: "August 2023"
+    },
+    {
+      title: "Wide Area Network Using Cisco Router for Intermediate",
+      issuer: "LEPKom UG",
+      date: "February 2024"
+    },
+    {
+      title: "Java for Intermediate",
+      issuer: "LEPKom UG",
+      date: "August 2024"
+    },
+    {
+      title: "Non-Fungible Token (NFT) Development in Web3 Era",
+      issuer: "MySkill (Kampus Merdeka Program)",
+      date: "2024"
+    },
+    {
+      title: "Member Certificate of KPPS",
+      issuer: "Presidential and Vice Presidential Election",
+      date: "February 2024"
+    },
+    {
+      title: "Figma Tools",
+      issuer: "MySkill",
+      date: "2024"
+    },
+    {
+      title: "Introduction to Figma",
+      issuer: "MySkill",
+      date: "2024"
+    },
+    {
+      title: "Introduction to Looker Data Studio",
+      issuer: "MySkill",
+      date: "2024"
+    },
+    {
+      title: "Internet Introduction",
+      issuer: "MySkill",
+      date: "2024"
+    },
+    {
+      title: "Building Website Using HTML5",
+      issuer: "FIKTI Learning",
+      date: "May 2023"
+    },
+    {
+      title: "Data Preparation for Business Processes",
+      issuer: "MySkill",
+      date: "September 2024"
+    },
+    {
+      title: "Creating Business Intelligence",
+      issuer: "MySkill",
+      date: "May 2025 (In progress)"
+    }
+  ];
 
   // WhatsApp send handler
   const handleWhatsAppSend = (e) => {
@@ -27,21 +116,23 @@ const App = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'experience', 'projects', 'skills', 'contact'];
+      const sections = ['home', 'about', 'experience', 'projects', 'skills', 'certificates', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
+      // Section highlight
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
           const offsetTop = element.offsetTop;
           const offsetHeight = element.offsetHeight;
-
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setActiveSection(section);
             break;
           }
         }
       }
+      // Shadow effect
+      setScrolled(window.scrollY > 10);
     };
     const handleMouseMove = (e) => {
       setCursorPosition({ x: e.clientX, y: e.clientY });
@@ -54,6 +145,26 @@ const App = () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
     };
+  }, []);
+
+  // Tambahkan efek animasi saat section aktif
+  useEffect(() => {
+    if (sectionRefs.current[activeSection]) {
+      sectionRefs.current[activeSection].classList.remove('section-animate');
+      // Trigger reflow for restart animation
+      void sectionRefs.current[activeSection].offsetWidth;
+      sectionRefs.current[activeSection].classList.add('section-animate');
+    }
+  }, [activeSection]);
+
+  // Inisialisasi AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: false,
+      mirror: true,
+    });
   }, []);
 
   const toggleTheme = () => {
@@ -101,29 +212,81 @@ const App = () => {
       </button>
 
       {/* Navigation */}
-      <nav className="navbar">
-        <div className="nav-logo">
-          <span className="logo-text">YKU</span>
-        </div>
-        <button className="hamburger" onClick={handleMenuToggle} aria-label="Toggle menu">
-          <span className={menuOpen ? "bar open" : "bar"}></span>
-          <span className={menuOpen ? "bar open" : "bar"}></span>
-          <span className={menuOpen ? "bar open" : "bar"}></span>
-        </button>
-        <ul className={`nav-links${menuOpen ? ' open' : ''}`}>
-          <li className={activeSection === 'home' ? 'active' : ''} onClick={() => {scrollToSection('home'); setMenuOpen(false);}}>Home</li>
-          <li className={activeSection === 'about' ? 'active' : ''} onClick={() => {scrollToSection('about'); setMenuOpen(false);}}>About</li>
-          <li className={activeSection === 'experience' ? 'active' : ''} onClick={() => {scrollToSection('experience'); setMenuOpen(false);}}>Experience</li>
-          <li className={activeSection === 'projects' ? 'active' : ''} onClick={() => {scrollToSection('projects'); setMenuOpen(false);}}>Projects</li>
-          <li className={activeSection === 'skills' ? 'active' : ''} onClick={() => {scrollToSection('skills'); setMenuOpen(false);}}>Skills</li>
-          <li className={activeSection === 'contact' ? 'active' : ''} onClick={() => {scrollToSection('contact'); setMenuOpen(false);}}>Contact</li>
-        </ul>
-      </nav>
+      <nav
+  className={`navbar navbar-expand-lg custom-navbar shadow-sm fixed-top${scrolled ? ' navbar-scrolled' : ''} ${darkMode ? 'navbar-dark' : 'navbar-light'}`}
+  style={{ minHeight: 72, padding: 0 }}
+>
+  <div className="container nav-animated d-flex flex-row align-items-center justify-content-between px-3">
+    {/* Brand Centered */}
+
+    {/* Hamburger on right for mobile */}
+    <button
+      className={`navbar-toggler${menuOpen ? ' open' : ''}`}
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar"
+      aria-expanded={menuOpen ? "true" : "false"}
+      aria-label="Toggle navigation"
+      onClick={handleMenuToggle}
+      style={{ border: 'none', outline: 'none', marginLeft: 'auto' }}
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div
+      className={`collapse navbar-collapse justify-content-center nav-animated${menuOpen ? ' show' : ''}`}
+      id="mainNavbar"
+    >
+      <ul className="navbar-nav gap-4 py-2"
+        style={{ fontSize: '1.15rem', fontWeight: 600 }}>
+        {[
+          { id: 'home', label: 'Home' },
+          { id: 'about', label: 'About' },
+          { id: 'experience', label: 'Experience' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'skills', label: 'Skills' },
+          { id: 'certificates', label: 'Certificates' },
+          { id: 'contact', label: 'Contact' }
+        ].map((item, idx) => (
+          <li className="nav-item" key={item.id}
+            style={{
+              animation: menuOpen
+                ? `fadeInNav 0.4s ${0.08 * idx + 0.1}s both`
+                : undefined
+            }}>
+            <a
+              className={`nav-link px-3${activeSection === item.id ? ' active' : ''}`}
+              href={`#${item.id}`}
+              style={{
+                borderRadius: 12,
+                transition: 'background 0.18s, color 0.18s',
+                position: 'relative',
+                letterSpacing: '0.5px',
+              }}
+              onClick={e => {
+                e.preventDefault();
+                scrollToSection(item.id);
+                setMenuOpen(false);
+              }}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</nav>
 
       {/* Main content */}
       <main>
         {/* Hero section */}
-        <section id="home" className="hero-section">
+        <section
+          id="home"
+          className="hero-section aos-section"
+          ref={el => (sectionRefs.current['home'] = el)}
+          data-aos="fade-in"
+        >
             <div className="hero-content">
                 <div className="hero-text">
                     <h4>Hello, I'm</h4>
@@ -159,7 +322,12 @@ const App = () => {
                 <div className="arrow-down"></div>
             </div>
         </section>
-        <section id="about" className="about-section">
+        <section
+          id="about"
+          className="about-section aos-section"
+          ref={el => (sectionRefs.current['about'] = el)}
+          data-aos="fade-up"
+        >
           <h2 className="section-title">About Me</h2>
           <div className="about-content">
             <div className="about-text">
@@ -203,9 +371,15 @@ const App = () => {
         </section>
 
         {/* Experience section */}
-        <section id="experience" className="experience-section">
+        <section
+          id="experience"
+          className="experience-section aos-section"
+          ref={el => (sectionRefs.current['experience'] = el)}
+          data-aos="fade-up"
+        >
           <h2 className="section-title">Experience</h2>
           <div className="timeline">
+            {/* Timeline Item 1 */}
             <div className="timeline-item">
               <div className="timeline-date">Feb 2024 - Jun 2024</div>
               <div className="timeline-content">
@@ -219,13 +393,17 @@ const App = () => {
                 </p>
               </div>
             </div>
+            {/* Timeline Item 2 */}
             <div className="timeline-item">
               <div className="timeline-date">Jun 2024 - Present</div>
               <div className="timeline-content">
                 <h3>Karang Taruna</h3>
-                <p>Active member contributing to youth social initiatives, community service, and event coordination.</p>
+                <p>
+                  Active member contributing to youth social initiatives, community service, and event coordination.
+                </p>
               </div>
             </div>
+            {/* Timeline Item 3 */}
             <div className="timeline-item">
               <div className="timeline-date">Jun 2024 - Jun 2024</div>
               <div className="timeline-content">
@@ -237,6 +415,7 @@ const App = () => {
                 </p>
               </div>
             </div>
+            {/* Timeline Item 4 */}
             <div className="timeline-item">
               <div className="timeline-date">Feb 2024</div>
               <div className="timeline-content">
@@ -251,7 +430,12 @@ const App = () => {
         </section>
 
         {/* Projects section */}
-        <section id="projects" className="projects-section">
+        <section
+          id="projects"
+          className="projects-section aos-section"
+          ref={el => (sectionRefs.current['projects'] = el)}
+          data-aos="fade-up"
+        >
           <h2 className="section-title">Projects</h2>
           <div className="projects-grid">
             <div className="project-card">
@@ -346,7 +530,12 @@ const App = () => {
         </section>
 
         {/* Skills section */}
-        <section id="skills" className="skills-section">
+        <section
+          id="skills"
+          className="skills-section aos-section"
+          ref={el => (sectionRefs.current['skills'] = el)}
+          data-aos="fade-up"
+        >
           <h2 className="section-title">Technical Skills</h2>
           <div className="skills-container">
             <div className="skills-category">
@@ -473,9 +662,37 @@ const App = () => {
             </div>
           </div>
         </section>
+{/* Certificates Section */}
+        <section
+          id="certificates"
+          className="certificates-section aos-section"
+          ref={el => (sectionRefs.current['certificates'] = el)}
+          data-aos="fade-up"
+        >
+  <h2 className="section-title">Certificates</h2>
+  <div className="certificates-grid">
+    {certificates.map((cert, index) => (
+      <div key={index} className="certificate-card fade-in" style={{ animationDelay: `${index * 0.08}s` }}>
+        <div className="certificate-icon">
+          <span className="medal-icon">🏅</span>
+        </div>
+        <div className="certificate-content">
+          <h3>{cert.title}</h3>
+          <p className="certificate-issuer">{cert.issuer}</p>
+          <p className="certificate-date">{cert.date}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Contact section */}
-        <section id="contact" className="contact-section">
+        <section
+          id="contact"
+          className="contact-section aos-section"
+          ref={el => (sectionRefs.current['contact'] = el)}
+          data-aos="fade-up"
+        >
           <h2 className="section-title">Get In Touch</h2>
           <div className="contact-content">
             <div className="contact-info">
@@ -519,8 +736,7 @@ const App = () => {
           </div>
         </section>
       </main>
-
-      
+      {/* ...existing code... */}
     </div>
   );
 };
