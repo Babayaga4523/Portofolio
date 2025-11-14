@@ -6,14 +6,142 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Tambahkan import AOS
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Modal, Card, Row, Col } from 'react-bootstrap';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [darkMode, setDarkMode] = useState(true);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const sectionRefs = useRef({});
+
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+const certificates = [
+    {
+      title: "Aptitude Test",
+      issuer: "LEPKom UG",
+      date: "July 23, 2025",
+      image: "/certificates/Aptitude Test.png",
+      description: "Professional aptitude assessment test demonstrating analytical and problem-solving capabilities."
+    },
+    {
+      title: "Creating Business Intelligence",
+      issuer: "MySkill",
+      date: "May 27, 2025",
+      image: "/certificates/Creating Business Intelligence.png",
+      description: "Advanced business intelligence concepts, data analytics, and strategic decision-making tools."
+    },
+    {
+      title: "Data Preparation for Business Processes",
+      issuer: "MySkill",
+      date: "September 23, 2024",
+      image: "/certificates/Data Preparation for Business Processes.png",
+      description: "Data management and preparation techniques for business process optimization and analysis."
+    },
+    {
+      title: "JAVA FOR INTERMEDIATE",
+      issuer: "LEPKom UG",
+      date: "August 19, 2024",
+      image: "/certificates/JAVA FOR INTERMEDIATE.png",
+      description: "Intermediate Java programming covering advanced OOP concepts, data structures, and design patterns."
+    },
+    {
+      title: "WIDE AREA NETWORK USING CISCO ROUTER FOR INTERMEDIATE",
+      issuer: "LEPKom UG",
+      date: "February 19, 2024",
+      image: "/certificates/WIDE AREA NETWORK USING CISCO ROUTER FOR INTERMEDIATE.png",
+      description: "Advanced WAN configuration and management using Cisco routing technologies for intermediate level."
+    },
+    {
+      title: "JAVA PROGRAMMING FOR BEGINNER",
+      issuer: "LEPKom UG",
+      date: "August 21, 2023",
+      image: "/certificates/JAVA PROGRAMMING FOR BEGINNER.png",
+      description: "Fundamental Java programming course covering object-oriented concepts, syntax, and basic application development."
+    },
+    {
+      title: "Building Website using HTML 5",
+      issuer: "LEPKom UG",
+      date: "May 30, 2023",
+      image: "/certificates/Building Website using HTML 5.png",
+      description: "Modern web development using HTML5, covering semantic markup, multimedia, and responsive design."
+    },
+    {
+      title: "LOCAL AREA NETWORK USING CISCO ROUTER",
+      issuer: "LEPKom UG",
+      date: "February 20, 2023",
+      image: "/certificates/LOCAL AREA NETWORK USING CISCO ROUTER.png",
+      description: "Hands-on training in configuring and managing Local Area Networks using Cisco routing equipment."
+    },
+    {
+      title: "FUNDAMENTAL DESKTOP PROGRAMMING",
+      issuer: "LEPKom UG",
+      date: "August 22, 2022",
+      image: "/certificates/FUNDAMENTAL DESKTOP PROGRAMMING.png",
+      description: "Introduction to desktop application development, covering basic programming concepts and GUI development."
+    },
+    {
+      title: "FUNDAMENTAL NETWORKING",
+      issuer: "LEPKom UG",
+      date: "February 21, 2022",
+      image: "/certificates/FUNDAMENTAL NETWORKING.png",
+      description: "Comprehensive course covering fundamental networking concepts, protocols, and network architecture."
+    },
+    {
+      title: "SERTIFIKAT MAGANG DAN STUDI INDEPENDEN BERSERTIFIKAT",
+      issuer: "Kampus Merdeka",
+      date: "June 30, 2024",
+      image: "/certificates/studi independent.png",
+      description: "Official certification for completing the Magang dan Studi Independen Bersertifikat (MSIB) program."
+    },
+    {
+      title: "SERTIFIKAT KEPESERTAAN STUDI INDEPENDEN BERSERTIFIKAT ANGKATAN 6",
+      issuer: "Kampus Merdeka",
+      date: "June 30, 2024",
+      image: "/certificates/stupen 2.png",
+      description: "Certificate of participation in the 6th batch of Studi Independen Bersertifikat program."
+    },
+    {
+      title: "INTERNET INTRODUCTION",
+      issuer: "MySkill",
+      date: "October 24, 2023",
+      image: "/certificates/internet connection.png",
+      description: "Fundamental concepts of internet technology, protocols, and online communication systems."
+    },
+    {
+      title: "INTRODUCTION TO LOOKER DATA STUDIO",
+      issuer: "MySkill",
+      date: "October 31, 2023",
+      image: "/certificates/introduction looker studio.png",
+      description: "Data visualization and business intelligence using Google Looker Data Studio for reporting and analytics."
+    },
+    {
+      title: "INTRODUCTION TO FIGMA",
+      issuer: "MySkill",
+      date: "October 31, 2023",
+      image: "/certificates/introduction figma.png",
+      description: "Fundamental course introducing Figma interface, basic design principles, and collaborative features."
+    },
+    {
+      title: "FIGMA TOOLS",
+      issuer: "MySkill",
+      date: "November 10, 2023",
+      image: "/certificates/figmaa tools.png",
+      description: "Mastery of Figma design tools, covering interface design, prototyping, and collaborative workflows."
+    },
+    {
+      title: "Building Website Using HTML5",
+      issuer: "FIKTI Learning",
+      date: "May 30, 2023",
+      image: "/certificates/Building Website using HTML 5.png",
+      description: "Web development fundamentals using HTML5, covering modern markup and responsive web design principles."
+    }
+  ];
 
   // WhatsApp send handler
   const handleWhatsAppSend = (e) => {
@@ -51,16 +179,11 @@ const App = () => {
       // Shadow effect
       setScrolled(window.scrollY > 10);
     };
-    const handleMouseMove = (e) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY });
-    };
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
@@ -102,27 +225,51 @@ const App = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const projects = [
+    { title: 'CBT (Computer-Based Test) System', desc: 'Developed a full-stack Computer-Based Test (CBT) application using Next.js for the frontend and Laravel for the backend.', tech: ['Next.js','Laravel'], images: ['/cbt 1.png', '/cbt 2.png', '/cbt 3.png','/cbt 4.png', '/cbt 5.png', '/cbt 6.png', '/cbt 7.png', '/cbt 8.png', '/cbt 9.png', '/cbt 10.png', '/cbt 11.png', '/cbt 12.png', '/cbt 13.png'], link: 'https://kelasku-frontend.vercel.app/' },
+    { title: 'Multi-Feature Computer Vision Application', desc: 'Developed a comprehensive desktop application using Python with both CLI and GUI interfaces. Integrated various real-time detection modules via webcam, including: Face, Motion, Emotion, Mask, Pose, Hand Gesture, Age & Gender Detection, and Object Detection (YOLO).', tech: ['Python','OpenCV','YOLO'], images: ['/ml.png'], video: '/cv_demo.mp4' },
+    { title: 'Point of Sale (POS) System', desc: 'Built a functional web-based POS system using the Laravel framework for efficient sales, product, and transaction report management.', tech: ['Laravel','PHP','MySQL'], images: ['/kasir 1.png', '/kasir 2.png', '/kasir 3.png', '/kasir 4.png', '/kasir 5.png', '/kasir 6.png'] },
+    { title: 'Padang Berenang Resto', desc: 'Developed a comprehensive restaurant management system for Padang Berenang Resto featuring order management, menu administration, customer reservations, and sales reporting with modern web technologies.', tech: ['PHP','JavaScript','MySQL','Bootstrap'], images: ['/resto 1.png', '/resto 2.png', '/resto 3.png', '/resto 4.png', '/resto 5.png'] },
+    { title: 'Car Rental Website (Full-Stack)', desc: 'Developed a full-stack car rental web application using React.js (frontend) and Node.js/Express.js (backend), featuring a secure payment gateway and booking system integration.', tech: ['React.js','Node.js','Express.js'], images: ['/rental.jpg', '/rental 1.png', '/rental 2.png', '/rental 3.png', '/rental 4.png', '/rental 5.png', '/rental 6.png', '/rental 7.png', '/rental 8.png', '/rental 9.png', '/rental 10.png', '/rental 11.png', '/rental 12.png', '/rental 13.png', '/rental 14.png'] },
+    { title: 'E-Commerce Website "Pawon Sekar"', desc: 'Built a food e-commerce website with PHP and JavaScript, designed to increase order efficiency by 30% through an online ordering system and an admin dashboard.', tech: ['PHP','JavaScript','MySQL'], images: ['/Pawon.jpg'] },
+    { title: 'Personal Portfolio Website', desc: 'Built using React.js to showcase certificates, personal information, and contact details.', tech: ['React.js','CSS3','JavaScript'], images: ['/porto.png'] },
+    { title: 'NFT Creation', desc: 'Designed and published Non-Fungible Tokens (NFTs) as part of a Web3 project, including asset design and deployment on blockchain platforms.', tech: ['Web3','Blockchain','NFT'], images: ['/NFT.jpg'] },
+    { title: 'Generated 2D Animation', desc: 'Developed code-generated 2D animations for interactive visual exploration and experimentation.', tech: ['Adobe Illustrator','Canvas','Animation'], images: ['/kodok.jpg'] }
+  ];
+
+  const handleCardClick = (project) => {
+    setSelectedProject(project);
+    setCurrentSlide(0);
+    setShowModal(true);
+  };
+
+  const handleClose = () => setShowModal(false);
+
+  const handleCertificateClick = (certificate) => {
+    setSelectedCertificate(certificate);
+    setShowCertificateModal(true);
+  };
+
+  const handleCertificateClose = () => setShowCertificateModal(false);
+
+  const handleNextSlide = () => {
+    if (selectedProject && selectedProject.images) {
+      setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    if (selectedProject && selectedProject.images) {
+      setCurrentSlide((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
+    }
+  };
+
+  const handleImageClick = () => {
+    handleNextSlide();
+  };
+
   return (
     <div className={`portfolio-app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      {/* Custom cursor */}
-      <div 
-        className="custom-cursor" 
-        style={{ left: `${cursorPosition.x}px`, top: `${cursorPosition.y}px` }}
-      ></div>
-      
-      {/* Floating particles */}
-      <div className="particles">
-        {[...Array(30)].map((_, i) => (
-          <div key={i} className="particle" style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            width: `${Math.random() * 5 + 2}px`,
-            height: `${Math.random() * 5 + 2}px`,
-            animationDelay: `${Math.random() * 5}s`
-          }}></div>
-        ))}
-      </div>
-
       {/* Theme toggle */}
       <button className="theme-toggle" onClick={toggleTheme}>
         {darkMode ? '☀️' : '🌙'}
@@ -130,244 +277,222 @@ const App = () => {
 
       {/* Navigation */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg'
-            : 'bg-transparent'
-        } ${darkMode ? 'text-white' : 'text-gray-900'}`}
-        style={{ minHeight: 72 }}
-      >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-18">
-          {/* Brand */}
-          <div className="flex-shrink-0">
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              YK
-            </span>
-          </div>
+  className={`navbar navbar-expand-lg custom-navbar shadow-sm fixed-top${scrolled ? ' navbar-scrolled' : ''} ${darkMode ? 'navbar-dark' : 'navbar-light'}`}
+  style={{ minHeight: 72, padding: 0 }}
+>
+  <div className="container nav-animated d-flex flex-row align-items-center justify-content-between px-3">
+    {/* Brand Centered */}
 
-          {/* Hamburger Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors duration-200"
-            onClick={handleMenuToggle}
-            aria-label="Toggle navigation"
-          >
-            <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                menuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
-              }`}></span>
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                menuOpen ? 'opacity-0' : 'opacity-100'
-              }`}></span>
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                menuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
-              }`}></span>
-            </div>
-          </button>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {[
-              { id: 'home', label: 'Home' },
-              { id: 'about', label: 'About' },
-              { id: 'experience', label: 'Experience' },
-              { id: 'projects', label: 'Projects' },
-              { id: 'skills', label: 'Skills' },
-              { id: 'certificates', label: 'Certificates' },
-              { id: 'contact', label: 'Contact' }
-            ].map((item, idx) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={`relative px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg ${
-                  activeSection === item.id
-                    ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-slate-800'
-                }`}
-                onClick={e => {
-                  e.preventDefault();
-                  scrollToSection(item.id);
-                }}
-              >
-                {item.label}
-                {activeSection === item.id && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-purple-600 dark:bg-purple-400 rounded-full"></span>
-                )}
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile Navigation Menu */}
-          <div className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 transition-all duration-300 ${
-            menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-          }`}>
-            <div className="px-6 py-4 space-y-2">
-              {[
-                { id: 'home', label: 'Home' },
-                { id: 'about', label: 'About' },
-                { id: 'experience', label: 'Experience' },
-                { id: 'projects', label: 'Projects' },
-                { id: 'skills', label: 'Skills' },
-                { id: 'certificates', label: 'Certificates' },
-                { id: 'contact', label: 'Contact' }
-              ].map((item, idx) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className={`block px-4 py-3 text-base font-medium transition-all duration-300 rounded-lg ${
-                    activeSection === item.id
-                      ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-slate-800'
-                  }`}
-                  style={{
-                    animation: menuOpen
-                      ? `slideInFromLeft 0.4s ${0.08 * idx + 0.1}s both`
-                      : undefined
-                  }}
-                  onClick={e => {
-                    e.preventDefault();
-                    scrollToSection(item.id);
-                    setMenuOpen(false);
-                  }}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </nav>
+    {/* Hamburger on right for mobile */}
+    <button
+      className={`navbar-toggler${menuOpen ? ' open' : ''}`}
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar"
+      aria-expanded={menuOpen ? "true" : "false"}
+      aria-label="Toggle navigation"
+      onClick={handleMenuToggle}
+      style={{ border: 'none', outline: 'none', marginLeft: 'auto' }}
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div
+      className={`collapse navbar-collapse justify-content-center nav-animated${menuOpen ? ' show' : ''}`}
+      id="mainNavbar"
+    >
+      <ul className="navbar-nav gap-4 py-2"
+        style={{ fontSize: '1.15rem', fontWeight: 600 }}>
+        {[
+          { id: 'home', label: 'Home' },
+          { id: 'about', label: 'About' },
+          { id: 'experience', label: 'Experience' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'skills', label: 'Skills' },
+          { id: 'certificates', label: 'Certificates' },
+          { id: 'contact', label: 'Contact' }
+        ].map((item, idx) => (
+          <li className="nav-item" key={item.id}
+            style={{
+              animation: menuOpen
+                ? `fadeInNav 0.4s ${0.08 * idx + 0.1}s both`
+                : undefined
+            }}>
+            <a
+              className={`nav-link px-3${activeSection === item.id ? ' active' : ''}`}
+              href={`#${item.id}`}
+              style={{
+                borderRadius: 12,
+                transition: 'background 0.18s, color 0.18s',
+                position: 'relative',
+                letterSpacing: '0.5px',
+              }}
+              onClick={e => {
+                e.preventDefault();
+                scrollToSection(item.id);
+                setMenuOpen(false);
+              }}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</nav>
 
       {/* Main content */}
       <main>
         {/* Hero section */}
         <section
           id="home"
-          className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+          className="hero-section aos-section"
           ref={el => (sectionRefs.current['home'] = el)}
+          data-aos="fade-in"
         >
-          {/* Background Effects */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 w-2 h-2 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-20 right-20 w-1 h-1 bg-blue-400 rounded-full"></div>
-            <div className="absolute bottom-20 left-1/4 w-3 h-3 bg-purple-300 rounded-full"></div>
-            <div className="absolute top-1/3 right-10 w-2 h-2 bg-blue-300 rounded-full"></div>
-          </div>
-          <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-bounce-slow"></div>
-          <div className="absolute bottom-20 right-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-bounce-slow" style={{animationDelay: '1s'}}></div>
-
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-              <div className="flex-1 text-center lg:text-left animate-slide-up">
-                <h4 className="text-lg md:text-xl text-purple-400 font-medium mb-4">Hello, I'm</h4>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-                  Yoga Krisna <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Utama</span>
-                </h1>
-                <h3 className="text-xl md:text-2xl text-gray-300 mb-8 font-light">
-                  Information Systems Student & Software Engineer
-                </h3>
-                <p className="text-lg text-gray-400 mb-10 max-w-2xl leading-relaxed">
-                  An Information Systems graduate from Gunadarma University (GPA: 3.60/4.00) with a deep interest in developing machine learning and computer vision-based applications. Seeking an opportunity to contribute in a Software Engineer role where I can apply my skills in Python, object detection model development, and software engineering to create innovative technological solutions.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <button
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                    onClick={() => scrollToSection('contact')}
-                  >
-                    Contact Me
-                  </button>
-                  <button
-                    className="border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
-                    onClick={() => scrollToSection('projects')}
-                  >
-                    View Projects
-                  </button>
+            <div className="hero-content">
+                <div className="hero-text">
+                    <h4>Hello, I'm</h4>
+                    <h1>Yoga Krisna Utama</h1>
+                    <h3>Information Systems Student & Web Developer</h3>
+                    <p>Creating digital experiences with modern technologies and innovative solutions.</p>
+                    <div className="hero-buttons">
+                        <button
+                            className="primary-btn"
+                            type="button"
+                            onClick={() => scrollToSection('contact')}
+                        >
+                            Contact Me
+                        </button>
+                        <button
+                            className="secondary-btn"
+                            type="button"
+                            onClick={() => scrollToSection('projects')}
+                        >
+                            View Projects
+                        </button>
+                    </div>
                 </div>
-              </div>
-              <div className="flex-1 flex justify-center lg:justify-end">
-                <div className="relative">
-                  <div className="w-80 h-80 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border border-white/10 relative overflow-hidden">
-                    <div className="absolute inset-4 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 opacity-20 animate-pulse"></div>
-                    <div
-                      className="absolute inset-8 rounded-full bg-cover bg-center border-4 border-white/20"
-                      style={{ backgroundImage: "url('/yoga.jpg')" }}
-                    ></div>
-                  </div>
-                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-400 rounded-full border-4 border-slate-900 animate-ping"></div>
-                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-400 rounded-full border-4 border-slate-900"></div>
+                <div className="hero-image">
+                    <div className="image-container">
+                        <div className="glow-effect"></div>
+                        <div className="profile-image" style={{ backgroundImage: "url('/yoga.jpg')" }}></div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer group"
-            onClick={() => scrollToSection('about')}
-          >
-            <div className="flex flex-col items-center text-gray-400 group-hover:text-white transition-colors duration-300">
-              <span className="text-sm mb-2">Scroll Down</span>
-              <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center">
-                <div className="w-1 h-3 bg-current rounded-full mt-2 animate-bounce"></div>
-              </div>
+            <div className="scroll-indicator" onClick={() => scrollToSection('about')} style={{ cursor: 'pointer' }}>
+                <span>Scroll Down</span>
+                <div className="arrow-down"></div>
             </div>
-          </div>
         </section>
         <section
           id="about"
-          className="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300"
+          className="about-section aos-section"
           ref={el => (sectionRefs.current['about'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">About Me</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
+          <h2 className="section-title">About Me</h2>
+          <div className="about-container">
+            {/* Main Introduction Card */}
+            <div className="about-main-card">
+              <div className="about-header">
+                <div className="about-avatar">
+                  <img src="/yoga.jpg" alt="Yoga Krisna Utama" />
+                </div>
+                <div className="about-intro">
+                  <h3>Yoga Krisna Utama</h3>
+                  <p className="about-role">Information Systems Student & Web Developer</p>
+                  <p className="about-summary">
+                    An Information Systems graduate from Gunadarma University (GPA: 3.60/4.00) with a deep interest in developing machine learning and computer vision-based applications. Seeking an opportunity to contribute in a Software Engineer role where I can apply my skills in Python, object detection model development, and software engineering to create innovative technological solutions.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                  An Information Systems graduate from Gunadarma University (GPA: 3.60/4.00) with a deep interest in developing machine learning and computer vision-based applications. Seeking an opportunity to contribute in a Software Engineer role where I can apply my skills in Python, object detection model development, and software engineering to create innovative technological solutions.
-                </p>
+            {/* Education Card */}
+            <div className="about-card education-card">
+              <div className="card-icon">
+                <span className="icon-graduation">🎓</span>
+              </div>
+              <div className="card-content">
+                <h4>Education</h4>
+                <div className="education-details">
+                  <h5>Bachelor of Information Systems</h5>
+                  <p className="institution">Gunadarma University</p>
+                  <p className="duration">2021 – September 17, 2025</p>
+                  <p className="gpa">GPA: 3.60/4.00</p>
+                </div>
+              </div>
+            </div>
 
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-700">
-                  <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                    <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
-                    Education
-                  </h4>
-                  <div className="space-y-2">
-                    <h5 className="text-lg font-medium text-gray-900 dark:text-white">Bachelor of Information Systems</h5>
-                    <p className="text-gray-600 dark:text-gray-400">Gunadarma University, 2021 – September 17, 2025</p>
-                    <p className="text-purple-600 dark:text-purple-400 font-medium">GPA: 3.60/4.00</p>
+            {/* Core Competencies Card */}
+            <div className="about-card competencies-card">
+              <div className="card-icon">
+                <span className="icon-competencies">💡</span>
+              </div>
+              <div className="card-content">
+                <h4>Core Competencies</h4>
+                <div className="competencies-grid">
+                  <div className="competency-item">
+                    <span className="competency-icon">🚀</span>
+                    <span>Technical Leadership</span>
+                  </div>
+                  <div className="competency-item">
+                    <span className="competency-icon">🔍</span>
+                    <span>Analytical Thinking</span>
+                  </div>
+                  <div className="competency-item">
+                    <span className="competency-icon">⚡</span>
+                    <span>Agile Development</span>
+                  </div>
+                  <div className="competency-item">
+                    <span className="competency-icon">✅</span>
+                    <span>Quality Assurance</span>
+                  </div>
+                  <div className="competency-item">
+                    <span className="competency-icon">🤝</span>
+                    <span>Client Collaboration</span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-8">
-                <div>
-                  <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                    Core Competencies
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Technical Leadership', 'Analytical Thinking', 'Agile Development', 'Quality Assurance', 'Client Collaboration'].map((skill, index) => (
-                      <div key={index} className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 p-3 rounded-lg border border-purple-200 dark:border-slate-600">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill}</span>
-                      </div>
-                    ))}
+            {/* Soft Skills Card */}
+            <div className="about-card soft-skills-card">
+              <div className="card-icon">
+                <span className="icon-soft-skills">🌟</span>
+              </div>
+              <div className="card-content">
+                <h4>Soft Skills</h4>
+                <div className="soft-skills-grid">
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">💬</span>
+                    <span>Effective Communication</span>
                   </div>
-                </div>
-
-                <div>
-                  <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                    Soft Skills
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Effective Communication', 'Team Collaboration', 'Time Management', 'Creativity', 'Empathy', 'Responsibility', 'Trustworthiness'].map((skill, index) => (
-                      <div key={index} className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 p-3 rounded-lg border border-green-200 dark:border-slate-600">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill}</span>
-                      </div>
-                    ))}
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">👥</span>
+                    <span>Team Collaboration</span>
+                  </div>
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">⏰</span>
+                    <span>Time Management</span>
+                  </div>
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">🎨</span>
+                    <span>Creativity</span>
+                  </div>
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">❤️</span>
+                    <span>Empathy</span>
+                  </div>
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">🤝</span>
+                    <span>Responsibility</span>
+                  </div>
+                  <div className="soft-skill-item">
+                    <span className="soft-skill-icon">🔒</span>
+                    <span>Trustworthiness</span>
                   </div>
                 </div>
               </div>
@@ -378,89 +503,55 @@ const App = () => {
         {/* Experience section */}
         <section
           id="experience"
-          className="py-20 bg-white dark:bg-slate-800 transition-colors duration-300"
+          className="experience-section aos-section"
           ref={el => (sectionRefs.current['experience'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Experience</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
+          <h2 className="section-title">Experience</h2>
+          <div className="timeline">
+            {/* Timeline Item 1 */}
+            <div className="timeline-item">
+              <div className="timeline-date">Feb 16, 2024 - Jun 30, 2024</div>
+              <div className="timeline-content">
+                <h3>Non-Fungible Token (NFT) Development in Web3 Era</h3>
+                <p>
+                  Contributed to a Web3-based development project centered on Non-Fungible Tokens (NFTs), 
+                  where I conducted technical research, participated in discussions, and developed interactive 
+                  features within the app. Collaborated with a multidisciplinary team to implement blockchain 
+                  integration and enhance the usability and educational value of NFT-based content for users 
+                  in the aquaculture domain.
+                </p>
+              </div>
             </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="relative">
-                {/* Timeline line */}
-                <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-blue-500"></div>
-
-                <div className="space-y-12">
-                  {/* Experience Item 1 */}
-                  <div className="relative flex items-start">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-white text-xl">💼</span>
-                    </div>
-                    <div className="ml-8 bg-white dark:bg-slate-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-600 flex-1">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">Software Engineer Intern</h3>
-                          <h4 className="text-lg text-purple-600 dark:text-purple-400 font-medium">PT. Telkom Indonesia</h4>
-                        </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-600 px-3 py-1 rounded-full mt-2 md:mt-0">July 2024 - September 2024</span>
-                      </div>
-                      <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Developed a Computer-Based Test (CBT) system using Python Flask, HTML, CSS, and JavaScript
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Implemented user authentication and session management
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Created responsive UI components for test administration
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Integrated database management for storing test data and results
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Experience Item 2 */}
-                  <div className="relative flex items-start">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-white text-xl">🚀</span>
-                    </div>
-                    <div className="ml-8 bg-white dark:bg-slate-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-600 flex-1">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">Freelance Developer</h3>
-                          <h4 className="text-lg text-blue-600 dark:text-blue-400 font-medium">Independent Contractor</h4>
-                        </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-600 px-3 py-1 rounded-full mt-2 md:mt-0">2023 - Present</span>
-                      </div>
-                      <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Developed custom web applications using React.js and Node.js
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Created mobile applications with React Native
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Implemented machine learning models for computer vision projects
-                        </li>
-                        <li className="flex items-start">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          Collaborated with clients to deliver tailored software solutions
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+            {/* Timeline Item 2 */}
+            <div className="timeline-item">
+              <div className="timeline-date">Jun 2, 2024 - Jun 26, 2024</div>
+              <div className="timeline-content">
+                <h3>Event Crew – Provalliant</h3>
+                <p>
+                  Successfully managed logistics for several large-scale public events with over 1,000 attendees at 3 prominent locations (Dufan, AEON Mall Deltamas, Mall of Indonesia), ensuring a smooth event flow from preparation to completion.
+                </p>
+              </div>
+            </div>
+            {/* Timeline Item 3 */}
+            <div className="timeline-item">
+              <div className="timeline-date">Jun 8, 2024 - Present</div>
+              <div className="timeline-content">
+                <h3>Karang Taruna</h3>
+                <p>
+                  Active member contributing to youth social initiatives, community service, and event coordination.
+                </p>
+              </div>
+            </div>
+            {/* Timeline Item 4 */}
+            <div className="timeline-item">
+              <div className="timeline-date">Feb 14 - 15, 2024</div>
+              <div className="timeline-content">
+                <h3>KPPS Committee Member (Voting Group 2)</h3>
+                <p>
+                  Participated as an official member in the presidential and vice-presidential election team, 
+                  supporting the coordination and execution of the voting process.
+                </p>
               </div>
             </div>
           </div>
@@ -469,408 +560,401 @@ const App = () => {
         {/* Projects section */}
         <section
           id="projects"
-          className="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300"
+          className="projects-section aos-section"
           ref={el => (sectionRefs.current['projects'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Projects</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              {/* Project Card 1 */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-slate-700 overflow-hidden group">
-                <div className="h-48 bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                  <span className="text-6xl">📊</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Computer-Based Test (CBT) System</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                    A comprehensive testing platform built with Python Flask, featuring user authentication,
-                    session management, and responsive UI for educational institutions.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {['Python', 'Flask', 'HTML', 'CSS', 'JavaScript', 'SQLite'].map((tech, index) => (
-                      <span key={index} className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-sm rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      View Demo
-                    </button>
-                    <button className="flex-1 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      Source Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Project Card 2 */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-slate-700 overflow-hidden group">
-                <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                  <span className="text-6xl">🤖</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Computer Vision Application</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                    An AI-powered application using YOLOv8 for object detection and image processing,
-                    built with Python and OpenCV for real-time analysis.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {['Python', 'YOLOv8', 'OpenCV', 'TensorFlow', 'NumPy'].map((tech, index) => (
-                      <span key={index} className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      View Demo
-                    </button>
-                    <button className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      Source Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Project Card 3 */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-slate-700 overflow-hidden group">
-                <div className="h-48 bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
-                  <span className="text-6xl">💻</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Portfolio Website</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                    A responsive personal portfolio website built with React.js, featuring modern design,
-                    animations, and optimized performance.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {['React.js', 'CSS3', 'JavaScript', 'HTML5'].map((tech, index) => (
-                      <span key={index} className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-sm rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      View Live
-                    </button>
-                    <button className="flex-1 border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      Source Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Project Card 4 */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-slate-700 overflow-hidden group">
-                <div className="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                  <span className="text-6xl">📱</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Mobile E-Commerce App</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                    A cross-platform mobile application for online shopping, built with React Native
-                    and integrated with payment gateways.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {['React Native', 'JavaScript', 'Firebase', 'Stripe API'].map((tech, index) => (
-                      <span key={index} className="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 text-sm rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      View Demo
-                    </button>
-                    <button className="flex-1 border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                      Source Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <h2 className="section-title">Projects</h2>
+          <div className="container">
+            <Row>
+              {projects.map((project, index) => (
+                <Col xs={12} md={6} lg={4} key={index} className="mb-4">
+                  <Card className="project-card-modern h-100" onClick={() => handleCardClick(project)}>
+                    <Card.Img variant="top" src={project.images[0]} alt={project.title} />
+                    <Card.Body className="d-flex flex-column">
+                      <Card.Title className="text-center">{project.title}</Card.Title>
+                      <Card.Text className="text-muted text-center flex-grow-1">{project.desc.split('.')[0]}.</Card.Text>
+                      <div className="tech-badges">
+                        {project.tech.slice(0, 3).map((tech, i) => (
+                          <span key={i} className="badge">{tech}</span>
+                        ))}
+                        {project.tech.length > 3 && (
+                          <span className="badge">+{project.tech.length - 3}</span>
+                        )}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </div>
+
+          <Modal show={showModal} onHide={handleClose} centered size="lg" className="modern-modal">
+            <Modal.Header closeButton className="border-0 bg-transparent">
+              <Modal.Title className="text-center w-100">{selectedProject?.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="text-center">
+              {selectedProject?.video ? (
+                <div className="mb-3">
+                  <video
+                    src={selectedProject.video}
+                    controls
+                    className="img-fluid rounded-4"
+                    style={{ maxWidth: '100%', height: 'auto' }}
+                    poster={selectedProject?.images?.[0]}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                  <p className="text-muted mt-2">Demo video of the Computer Vision Application</p>
+                </div>
+              ) : selectedProject?.images && selectedProject.images.length > 1 ? (
+                <div className="carousel-container mb-3">
+                  <div className="carousel-inner position-relative">
+                    {selectedProject.images.map((image, index) => (
+                      <div key={index} className={`carousel-item ${index === currentSlide ? 'active' : ''}`}>
+                        <img
+                          src={image}
+                          alt={`${selectedProject?.title} ${index + 1}`}
+                          className="d-block w-100 rounded-4 cursor-pointer"
+                          style={{ cursor: 'pointer' }}
+                          onClick={handleImageClick}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    className="carousel-control-prev"
+                    type="button"
+                    onClick={handlePrevSlide}
+                  >
+                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span className="visually-hidden">Previous</span>
+                  </button>
+                  <button
+                    className="carousel-control-next"
+                    type="button"
+                    onClick={handleNextSlide}
+                  >
+                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span className="visually-hidden">Next</span>
+                  </button>
+                  <div className="carousel-indicators">
+                    {selectedProject.images.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setCurrentSlide(index)}
+                        className={index === currentSlide ? 'active' : ''}
+                        aria-current={index === currentSlide ? 'true' : 'false'}
+                        aria-label={`Slide ${index + 1}`}
+                      ></button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <img src={selectedProject?.images[0]} alt={selectedProject?.title} className="img-fluid rounded-4 mb-3" />
+              )}
+              <p className="mb-3">{selectedProject?.desc}</p>
+              <div className="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                {selectedProject?.tech.map((tech, i) => (
+                  <span key={i} className="badge bg-primary">{tech}</span>
+                ))}
+              </div>
+              {selectedProject?.link && (
+                <div className="text-center">
+                  <a
+                    href={selectedProject.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-success"
+                  >
+                    🌐 View Live Demo
+                  </a>
+                </div>
+              )}
+            </Modal.Body>
+          </Modal>
         </section>
 
         {/* Skills section */}
         <section
           id="skills"
-          className="py-20 bg-white dark:bg-slate-800 transition-colors duration-300"
+          className="skills-section aos-section"
           ref={el => (sectionRefs.current['skills'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Skills</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
+          <h2 className="section-title">Technical Skills</h2>
+          <div className="skills-container">
+            <div className="skills-category">
+              <h3>Programming Languages</h3>
+              <div className="skills-list">
+                <div className="skill-item">
+                  <span>Java <span className="skill-percentage">85%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>JavaScript <span className="skill-percentage">90%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>PHP <span className="skill-percentage">80%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '80%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>HTML5/CSS3 <span className="skill-percentage">95%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '95%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>SQL <span className="skill-percentage">85%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Python <span className="skill-percentage">70%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {/* Programming Languages */}
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-600">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                  <span className="w-3 h-3 bg-purple-500 rounded-full mr-3"></span>
-                  Programming Languages
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { name: 'Python', level: 90 },
-                    { name: 'JavaScript', level: 85 },
-                    { name: 'Java', level: 80 },
-                    { name: 'PHP', level: 75 }
-                  ].map((skill, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{skill.level}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+            <div className="skills-category">
+              <h3>Frameworks & Libraries</h3>
+              <div className="skills-list">
+                <div className="skill-item">
+                  <span>React.js <span className="skill-percentage">90%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Node.js <span className="skill-percentage">85%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Express.js <span className="skill-percentage">80%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '80%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Laravel <span className="skill-percentage">75%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Ruby on Rails <span className="skill-percentage">70%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '70%' }}></div>
+                  </div>
                 </div>
               </div>
-
-              {/* Frameworks & Libraries */}
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-600">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                  <span className="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
-                  Frameworks & Libraries
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { name: 'React.js', level: 85 },
-                    { name: 'Flask', level: 80 },
-                    { name: 'Node.js', level: 75 },
-                    { name: 'React Native', level: 70 }
-                  ].map((skill, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{skill.level}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+            </div>
+            <div className="skills-category">
+              <h3>Computer Vision</h3>
+              <div className="skills-list">
+                <div className="skill-item">
+                  <span>OpenCV <span className="skill-percentage">75%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>YOLO <span className="skill-percentage">70%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Face & Emotion Detection <span className="skill-percentage">80%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '80%' }}></div>
+                  </div>
                 </div>
               </div>
-
-              {/* Tools & Technologies */}
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-slate-600">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                  <span className="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
-                  Tools & Technologies
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { name: 'YOLOv8', level: 85 },
-                    { name: 'OpenCV', level: 80 },
-                    { name: 'TensorFlow', level: 75 },
-                    { name: 'Git', level: 85 }
-                  ].map((skill, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{skill.level}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+            </div>
+            <div className="skills-category">
+              <h3>Tools & Technologies</h3>
+              <div className="skills-list">
+                <div className="skill-item">
+                  <span>Git/GitHub <span className="skill-percentage">90%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>MySQL <span className="skill-percentage">85%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>VS Code <span className="skill-percentage">95%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '95%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Postman <span className="skill-percentage">80%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '80%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Laragon <span className="skill-percentage">75%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="skills-category">
+              <h3>Design Tools</h3>
+              <div className="skills-list">
+                <div className="skill-item">
+                  <span>Blender (3D Modeling) <span className="skill-percentage">70%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Adobe Illustrator (Vector Graphics) <span className="skill-percentage">75%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Figma <span className="skill-percentage">80%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '80%' }}></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-                {/* Certificates Section */}
+{/* Certificates Section */}
         <section
           id="certificates"
-          className="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300"
+          className="certificates-section aos-section"
           ref={el => (sectionRefs.current['certificates'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Certificates</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {[
-                { title: "Adobe Illustrator", issuer: "Adobe Certified Associate", year: "2023", icon: "🎨", color: "from-orange-500 to-red-500" },
-                { title: "Blockchain Fundamentals", issuer: "IBM", year: "2023", icon: "⛓️", color: "from-blue-500 to-purple-500" },
-                { title: "Python Programming", issuer: "Coursera", year: "2023", icon: "🐍", color: "from-green-500 to-blue-500" },
-                { title: "React.js Development", issuer: "Udemy", year: "2024", icon: "⚛️", color: "from-cyan-500 to-blue-500" },
-                { title: "YOLO Object Detection", issuer: "Roboflow", year: "2024", icon: "👁️", color: "from-purple-500 to-pink-500" },
-                { title: "Node.js Backend Development", issuer: "freeCodeCamp", year: "2024", icon: "🟢", color: "from-green-500 to-emerald-500" }
-              ].map((cert, index) => (
-                <div key={index} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-slate-700 p-6 group">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-br ${cert.color} rounded-lg flex items-center justify-center text-2xl`}>
-                      {cert.icon}
-                    </div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-full">
-                      {cert.year}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{cert.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">{cert.issuer}</p>
-                  <div className={`w-full h-1 bg-gradient-to-r ${cert.color} rounded-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
-                </div>
-              ))}
+  <h2 className="section-title">Certificates</h2>
+  <div className="certificates-grid">
+    {certificates.map((cert, index) => (
+      <div
+        key={index}
+        className="certificate-image-card fade-in"
+        style={{ animationDelay: `${index * 0.08}s` }}
+        onClick={() => handleCertificateClick(cert)}
+      >
+        <div className="certificate-image-container">
+          <img
+            src={cert.image}
+            alt={cert.title}
+            className="certificate-image"
+            onError={(e) => {
+              e.target.src = '/placeholder-certificate.jpg';
+            }}
+          />
+          <div className="certificate-overlay">
+            <div className="certificate-info">
+              <h4>{cert.title}</h4>
+              <p>{cert.issuer}</p>
+              <span className="view-details">Click to view details</span>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* Certificate Modal */}
+  <Modal show={showCertificateModal} onHide={handleCertificateClose} centered size="xl" className="certificate-modal">
+    <Modal.Header closeButton className="border-0 bg-transparent">
+      <Modal.Title className="text-center w-100">{selectedCertificate?.title}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body className="text-center">
+      <div className="certificate-modal-image">
+        <img
+          src={selectedCertificate?.image}
+          alt={selectedCertificate?.title}
+          className="img-fluid rounded-4 mb-4"
+          onError={(e) => {
+            e.target.src = '/placeholder-certificate.jpg';
+          }}
+        />
+      </div>
+      <div className="certificate-modal-details">
+        <div className="certificate-meta mb-3">
+          <span className="badge bg-primary me-2">{selectedCertificate?.issuer}</span>
+          <span className="badge bg-secondary">{selectedCertificate?.date}</span>
+        </div>
+        <p className="certificate-description">{selectedCertificate?.description}</p>
+      </div>
+    </Modal.Body>
+  </Modal>
+</section>
 
         {/* Contact section */}
         <section
           id="contact"
-          className="py-20 bg-white dark:bg-slate-800 transition-colors duration-300"
+          className="contact-section aos-section"
           ref={el => (sectionRefs.current['contact'] = el)}
+          data-aos="fade-up"
         >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Get In Touch</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-              {/* Contact Info */}
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Let's Connect</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                    I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.
-                    Feel free to reach out!
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="flex items-center p-4 bg-slate-50 dark:bg-slate-700 rounded-xl border border-gray-200 dark:border-slate-600">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center text-white text-xl mr-4">
-                      <MdEmail />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Email</h4>
-                      <p className="text-gray-600 dark:text-gray-300">yogakrisna1705@gmail.com</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center p-4 bg-slate-50 dark:bg-slate-700 rounded-xl border border-gray-200 dark:border-slate-600">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center text-white text-xl mr-4">
-                      <MdPhone />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Phone</h4>
-                      <p className="text-gray-600 dark:text-gray-300">+62 812-3456-7890</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center p-4 bg-slate-50 dark:bg-slate-700 rounded-xl border border-gray-200 dark:border-slate-600">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-xl mr-4">
-                      <MdLocationOn />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Location</h4>
-                      <p className="text-gray-600 dark:text-gray-300">Jakarta, Indonesia</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex space-x-4">
-                  <a
-                    href="https://linkedin.com/in/yoga-krisna-utama"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
-                  >
-                    <FaLinkedin className="text-xl" />
-                  </a>
-                  <a
-                    href="https://github.com/yogakrisna"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black rounded-lg flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
-                  >
-                    <FaGithub className="text-xl" />
-                  </a>
-                </div>
+          <h2 className="section-title">Get In Touch</h2>
+          <div className="contact-content">
+            <div className="contact-info">
+              <h3>Contact Information</h3>
+              <div className="info-item">
+                <span className="info-icon"><MdEmail /></span>
+                <span>Yogacode86@gmail.com</span>
               </div>
-
-              {/* Contact Form */}
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-8 shadow-lg border border-gray-200 dark:border-slate-600">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Send a Message</h3>
-                <form onSubmit={handleWhatsAppSend} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
-                      placeholder="Your Name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject</label>
-                    <input
-                      type="text"
-                      name="subject"
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
-                      placeholder="Subject"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
-                    <textarea
-                      name="message"
-                      rows="5"
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white resize-none"
-                      placeholder="Your message..."
-                    ></textarea>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                  >
-                    Send Message
-                  </button>
-                </form>
+              <div className="info-item">
+                <span className="info-icon"><MdPhone /></span>
+                <span>+6281294743876</span>
+              </div>
+              <div className="info-item">
+                <span className="info-icon"><MdLocationOn /></span>
+                <span>North Bekasi, Indonesia</span>
+              </div>
+              <div className="social-links">
+                <a href="https://linkedin.com/in/Yoga-Utama" target="_blank" rel="noopener noreferrer">
+                  <FaLinkedin /> LinkedIn
+                </a>
+                <a href="https://github.com/Babayaga4523" target="_blank" rel="noopener noreferrer">
+                  <FaGithub /> GitHub
+                </a>
               </div>
             </div>
+            <form className="contact-form" onSubmit={handleWhatsAppSend}>
+              <div className="form-group">
+                <input type="text" name="name" placeholder="Your Name" required />
+              </div>
+              <div className="form-group">
+                <input type="email" name="email" placeholder="Your Email" required />
+              </div>
+              <div className="form-group">
+                <input type="text" name="subject" placeholder="Subject" required />
+              </div>
+              <div className="form-group">
+                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+              </div>
+              <button type="submit" className="submit-btn">Send Message</button>
+            </form>
           </div>
         </section>
       </main>
