@@ -226,6 +226,7 @@ const certificates = [
   };
 
   const projects = [
+    { title: 'SYStream Movie App', desc: 'Showcasing "SYStream" - a full-stack, Netflix-inspired movie streaming web app, demonstrating advanced React/TypeScript development capabilities. Built with React 18 and TypeScript for robust architecture. Utilizes Vite for fast build/dev cycles and Tailwind CSS/Bootstrap for UI/UX. Integrates TMDB API for comprehensive movie data. Features custom video player with progress saving and robust error handling. Implements advanced filtering, search, and responsive design.', tech: ['React 18', 'TypeScript', 'Vite', 'Tailwind CSS', 'Bootstrap', 'TMDB API'], images: ['/movieku.png'], link: 'https://movieku-nine.vercel.app/' },
     { title: 'CBT (Computer-Based Test) System', desc: 'Developed a full-stack Computer-Based Test (CBT) application using Next.js for the frontend and Laravel for the backend.', tech: ['Next.js','Laravel'], images: ['/cbt 1.png', '/cbt 2.png', '/cbt 3.png','/cbt 4.png', '/cbt 5.png', '/cbt 6.png', '/cbt 7.png', '/cbt 8.png', '/cbt 9.png', '/cbt 10.png', '/cbt 11.png', '/cbt 12.png', '/cbt 13.png'], link: 'https://kelasku-frontend.vercel.app/' },
     { title: 'Multi-Feature Computer Vision Application', desc: 'Developed a comprehensive desktop application using Python with both CLI and GUI interfaces. Integrated various real-time detection modules via webcam, including: Face, Motion, Emotion, Mask, Pose, Hand Gesture, Age & Gender Detection, and Object Detection (YOLO).', tech: ['Python','OpenCV','YOLO'], images: ['/ml.png'], video: '/cv_demo.mp4' },
     { title: 'Point of Sale (POS) System', desc: 'Built a functional web-based POS system using the Laravel framework for efficient sales, product, and transaction report management.', tech: ['Laravel','PHP','MySQL'], images: ['/kasir 1.png', '/kasir 2.png', '/kasir 3.png', '/kasir 4.png', '/kasir 5.png', '/kasir 6.png'] },
@@ -748,9 +749,9 @@ const certificates = [
                   </div>
                 </div>
                 <div className="skill-item">
-                  <span>Laravel <span className="skill-percentage">75%</span></span>
+                  <span>Laravel <span className="skill-percentage">90%</span></span>
                   <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '75%' }}></div>
+                    <div className="skill-level" style={{ width: '90%' }}></div>
                   </div>
                 </div>
                 <div className="skill-item">
@@ -795,6 +796,12 @@ const certificates = [
                 </div>
                 <div className="skill-item">
                   <span>MySQL <span className="skill-percentage">85%</span></span>
+                  <div className="skill-bar">
+                    <div className="skill-level" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div className="skill-item">
+                  <span>Vite <span className="skill-percentage">85%</span></span>
                   <div className="skill-bar">
                     <div className="skill-level" style={{ width: '85%' }}></div>
                   </div>
