@@ -702,9 +702,9 @@ const certificates = [
                   </div>
                 </div>
                 <div className="skill-item">
-                  <span>PHP <span className="skill-percentage">80%</span></span>
+                  <span>PHP <span className="skill-percentage">85%</span></span>
                   <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '80%' }}></div>
+                    <div className="skill-level" style={{ width: '85%' }}></div>
                   </div>
                 </div>
                 <div className="skill-item">
