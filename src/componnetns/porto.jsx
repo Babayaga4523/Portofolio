@@ -105,61 +105,26 @@ const App = () => {
     document.body.removeChild(link);
   };
 
-  // Simple Video Component
+  // Video Player Component
   const VideoPlayer = ({ src }) => {
-    const [hasError, setHasError] = useState(false);
-
-    if (hasError) {
-      return (
-        <div style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#000',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          flexDirection: 'column',
-          gap: '1rem'
-        }}>
-          <div style={{ fontSize: '3rem' }}>🎬</div>
-          <p>Video tidak dapat dimainkan</p>
-          <a 
-            href={src} 
-            download
-            style={{
-              marginTop: '1rem',
-              padding: '0.75rem 1.5rem',
-              background: '#6366f1',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              fontSize: '0.875rem'
-            }}
-          >
-            Download Video
-          </a>
-        </div>
-      );
-    }
-
     return (
       <video 
-        width="100%"
-        height="100%"
         controls
+        preload="auto"
+        controlsList="nodownload"
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          objectFit: 'contain',
           backgroundColor: '#000',
           display: 'block'
         }}
-        onError={() => {
-          console.error('Video failed to load:', src);
-          setHasError(true);
+        onError={(e) => {
+          console.error('❌ Video failed to load:', src);
+          console.error('Error:', e.target?.error);
+        }}
+        onPlay={() => {
+          console.log('▶️ Video playing:', src);
         }}
       >
         <source src={src} type="video/mp4" />
@@ -443,33 +408,7 @@ const App = () => {
                   </svg>
                   North Bekasi, Indonesia
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{
-                    display: 'flex',
-                    marginRight: '-0.5rem'
-                  }}>
-                    {[1,2,3].map(i => (
-                      <div key={i} style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        background: '#374151',
-                        border: '2px solid #050505',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '8px',
-                        color: 'white',
-                        marginRight: '-8px'
-                      }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
-                        </svg>
-                      </div>
-                    ))}
-                  </div>
-                  <span>Open to Remote</span>
-                </div>
+                
               </div>
             </Col>
 
@@ -577,12 +516,12 @@ const App = () => {
                           fontWeight: 'bold',
                           color: 'white',
                           marginBottom: '0.25rem'
-                        }}>Yoga K. Utama</h3>
+                        }}>Yoga Krisna Utama</h3>
                         <p style={{
                           color: '#60a5fa',
                           fontSize: '0.875rem',
                           fontWeight: 500
-                        }}>System Analyst & AI Dev</p>
+                        }}>Full-Stack Web Developer</p>
                       </div>
                       <div style={{
                         width: '48px',
@@ -738,7 +677,17 @@ const App = () => {
           <Row className="g-4">
             {projects.map((project, idx) => (
               <Col lg={4} md={6} key={idx}>
-                <div className="project-card glass-card" onClick={() => handleProjectClick(project)}>
+                <div 
+                  className="project-card glass-card" 
+                  onClick={() => handleProjectClick(project)}
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
+                    e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
+                  }}
+                >
                   
                   {/* Image Area */}
                   <div className="card-image-wrapper">
@@ -1090,405 +1039,124 @@ const App = () => {
         </Container>
       </section>
 
-      {/* --- PROJECT MODAL: Mini Case Study --- */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="xl" contentClassName="glass-modal-content" dialogClassName="modal-dialog-custom">
-        <div style={{ position: 'relative' }}>
-          {/* Custom Close Button */}
-          <button 
-            onClick={() => setShowModal(false)}
-            style={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              zIndex: 50,
-              padding: '0.5rem',
-              borderRadius: '50%',
-              background: 'rgba(0, 0, 0, 0.5)',
-              color: 'white',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(8px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(0, 0, 0, 0.5)';
-            }}
-          >
+      {/* --- PROJECT MODAL: Cinematic Case Study (Modern Premium Design) --- */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="xl" contentClassName="premium-modal-content" dialogClassName="modal-dialog-custom">
+        <div className="project-modal-wrapper">
+          {/* Close Button */}
+          <button className="modal-close-btn" onClick={() => setShowModal(false)}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
           
-          {/* HERO IMAGE/VIDEO SECTION WITH CAROUSEL */}
+          {/* HERO SECTION */}
           {selectedProject && (
             <>
-              <div style={{
-                position: 'relative',
-                height: '300px',
-                width: '100%',
-                overflow: 'hidden',
-                borderRadius: '24px 24px 0 0'
-              }}>
-                {/* Dark gradient overlay */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(to top, #050505, transparent)',
-                  zIndex: 10
-                }} />
-                
-                {/* Video Player for Computer Vision Project */}
+              <div className="modal-hero">
+                {/* Video or Image */}
                 {selectedProject.video ? (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: '#000'
-                  }}>
+                  <div className="video-container">
                     <VideoPlayer src={selectedProject.video} />
+                    <div className="media-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polygon points="23 7 16 12 23 17 23 7" />
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                      </svg>
+                      Video Demo
+                    </div>
                   </div>
                 ) : (
                   <>
-                    {/* Carousel for Images */}
-                    {selectedProject.images && selectedProject.images.length > 0 ? (
+                    {selectedProject.images?.length > 0 && (
                       <>
-                        <img 
-                          src={selectedProject.images[currentImageIndex]} 
-                          alt={`${selectedProject.title} - ${currentImageIndex + 1}`}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            imageRendering: 'crisp-edges',
-                            filter: 'contrast(1.1) brightness(1.05) saturate(1.1)',
-                            WebkitImageRendering: 'auto'
-                          }}
-                        />
+                        <img src={selectedProject.images[currentImageIndex]} alt={selectedProject.title} className="hero-media" />
                         
-                        {/* Carousel Navigation - Previous */}
+                        {/* Carousel Controls */}
                         {selectedProject.images.length > 1 && (
-                          <button
-                            onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? selectedProject.images.length - 1 : prev - 1))}
-                            style={{
-                              position: 'absolute',
-                              left: '1.5rem',
-                              top: '50%',
-                              transform: 'translateY(-50%)',
-                              zIndex: 20,
-                              padding: '0.75rem',
-                              borderRadius: '50%',
-                              background: 'rgba(0, 0, 0, 0.6)',
-                              color: 'white',
-                              border: '1px solid rgba(255, 255, 255, 0.2)',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease',
-                              backdropFilter: 'blur(8px)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: '40px',
-                              height: '40px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.background = 'rgba(0, 0, 0, 0.6)';
-                            }}
-                          >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <polyline points="15 18 9 12 15 6" />
-                            </svg>
-                          </button>
-                        )}
-                        
-                        {/* Carousel Navigation - Next */}
-                        {selectedProject.images.length > 1 && (
-                          <button
-                            onClick={() => setCurrentImageIndex((prev) => (prev === selectedProject.images.length - 1 ? 0 : prev + 1))}
-                            style={{
-                              position: 'absolute',
-                              right: '1.5rem',
-                              top: '50%',
-                              transform: 'translateY(-50%)',
-                              zIndex: 20,
-                              padding: '0.75rem',
-                              borderRadius: '50%',
-                              background: 'rgba(0, 0, 0, 0.6)',
-                              color: 'white',
-                              border: '1px solid rgba(255, 255, 255, 0.2)',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease',
-                              backdropFilter: 'blur(8px)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: '40px',
-                              height: '40px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.background = 'rgba(0, 0, 0, 0.6)';
-                            }}
-                          >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <polyline points="9 18 15 12 9 6" />
-                            </svg>
-                          </button>
-                        )}
-                        
-                        {/* Image Counter */}
-                        {selectedProject.images.length > 1 && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '1.5rem',
-                            right: '1.5rem',
-                            zIndex: 20,
-                            background: 'rgba(0, 0, 0, 0.7)',
-                            color: 'white',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '50px',
-                            fontSize: '0.875rem',
-                            fontWeight: 'bold',
-                            backdropFilter: 'blur(8px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)'
-                          }}>
-                            {currentImageIndex + 1} / {selectedProject.images.length}
-                          </div>
+                          <>
+                            <button className="carousel-btn left" onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? selectedProject.images.length - 1 : prev - 1))}>
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="15 18 9 12 15 6" />
+                              </svg>
+                            </button>
+                            <button className="carousel-btn right" onClick={() => setCurrentImageIndex((prev) => (prev === selectedProject.images.length - 1 ? 0 : prev + 1))}>
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="9 18 15 12 9 6" />
+                              </svg>
+                            </button>
+                            <div className="carousel-counter">
+                              {currentImageIndex + 1} / {selectedProject.images.length}
+                            </div>
+                          </>
                         )}
                       </>
-                    ) : null}
+                    )}
                   </>
                 )}
                 
-                {/* Floating Category Badge */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '1.5rem',
-                  left: '1.5rem',
-                  zIndex: 20
-                }}>
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '0.5rem 0.75rem',
-                    borderRadius: '50px',
-                    fontSize: '0.75rem',
-                    fontWeight: 'bold',
-                    background: '#6366f1',
-                    color: 'white',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    boxShadow: '0 8px 16px rgba(99, 102, 241, 0.3)'
-                  }}>
-                    {selectedProject.video ? 'Computer Vision' : 'Web Development'}
-                  </span>
-                </div>
+                <div className="hero-overlay" />
+                <span className="hero-category-badge">
+                  {selectedProject.video ? 'Computer Vision' : 'Web Development'}
+                </span>
               </div>
 
               {/* CONTENT BODY */}
-              <div style={{
-                padding: '2rem',
-                background: '#050505'
-              }}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '2rem'
-                }}>
-                  
-                  {/* Left Column: Details */}
-                  <div style={{ minWidth: 0, gridColumn: 'span 2' }}>
-                    <h2 style={{
-                      fontSize: '1.875rem',
-                      fontWeight: 'bold',
-                      color: 'white',
-                      marginBottom: '1rem',
-                      letterSpacing: '-0.02em'
-                    }}>
-                      {selectedProject.title}
-                    </h2>
-                    <p style={{
-                      color: '#a1a1aa',
-                      lineHeight: 1.7,
-                      fontSize: '1rem',
-                      marginBottom: '1.5rem'
-                    }}>
-                      {selectedProject.desc}
-                    </p>
+              <div className="modal-body-content">
+                <div className="modal-grid">
+                  {/* Main Column */}
+                  <div className="modal-main">
+                    <h2 className="project-headline">{selectedProject.title}</h2>
+                    <p className="project-description">{selectedProject.desc}</p>
                     
-                    {/* Key Features */}
-                    <div style={{
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      border: '1px solid rgba(255, 255, 255, 0.05)',
-                      marginTop: '1.5rem'
-                    }}>
-                      <h5 style={{
-                        color: 'white',
-                        fontWeight: 600,
-                        marginBottom: '1rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+                    {/* Features Box */}
+                    <div className="features-box">
+                      <h5 className="section-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                         Key Features
                       </h5>
-                      <ul style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '0.75rem',
-                        listStyle: 'none',
-                        padding: 0,
-                        margin: 0
-                      }}>
-                        {['Responsive Design', 'Real-time Data', 'Secure Auth', 'Performance Optimized'].map((feat, i) => (
-                          <li key={i} style={{
-                            color: '#a1a1aa',
-                            fontSize: '0.875rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem'
-                          }}>
-                            <span style={{
-                              width: '6px',
-                              height: '6px',
-                              borderRadius: '50%',
-                              background: '#6366f1'
-                            }} />
-                            {feat}
+                      <ul className="features-list">
+                        {['Responsive Design', 'Real-time Processing', 'Secure Architecture', 'Performance Optimized'].map((feat, i) => (
+                          <li key={i} className="feature-item">
+                            <span className="dot" /> {feat}
                           </li>
                         ))}
                       </ul>
                     </div>
                   </div>
 
-                  {/* Right Column: Sidebar Info */}
-                  <div style={{ minWidth: 0 }}>
+                  {/* Sidebar Column */}
+                  <div className="modal-sidebar">
                     {/* Tech Stack */}
-                    <div style={{ marginBottom: '2rem' }}>
-                      <h5 style={{
-                        color: 'white',
-                        fontWeight: 600,
-                        marginBottom: '1rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
+                    <div className="sidebar-group">
+                      <h5 className="section-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />
-                          <line x1="12" y1="12" x2="20" y2="7.5" />
-                          <line x1="12" y1="12" x2="12" y2="21" />
-                          <line x1="12" y1="12" x2="4" y2="7.5" />
                         </svg>
-                        Tech Stack
+                        Technologies
                       </h5>
-                      <div style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '0.5rem'
-                      }}>
+                      <div className="tech-cloud">
                         {selectedProject.tech?.map((t, i) => (
-                          <span key={i} style={{
-                            padding: '0.5rem 0.75rem',
-                            borderRadius: '8px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            fontSize: '0.75rem',
-                            color: '#cbd5e1',
-                            fontFamily: 'Courier New, monospace',
-                            fontWeight: 500
-                          }}>
-                            {t}
-                          </span>
+                          <span key={i} className="tech-chip">{t}</span>
                         ))}
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.75rem',
-                      paddingTop: '1rem',
-                      borderTop: '1px solid rgba(255, 255, 255, 0.1)'
-                    }}>
+                    <div className="sidebar-actions">
                       {selectedProject.link && (
-                        <a 
-                          href={selectedProject.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            padding: '0.75rem 1rem',
-                            borderRadius: '12px',
-                            background: '#6366f1',
-                            color: 'white',
-                            fontWeight: 600,
-                            textDecoration: 'none',
-                            transition: 'all 0.3s ease',
-                            cursor: 'pointer',
-                            border: 'none'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#4f46e5';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 8px 16px rgba(99, 102, 241, 0.3)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#6366f1';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = 'none';
-                          }}
-                        >
+                        <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="btn-modal-primary">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                             <polyline points="15 3 21 3 21 9" />
                             <line x1="10" y1="14" x2="21" y2="3" />
                           </svg>
-                          Visit Live Demo
+                          Visit Demo
                         </a>
                       )}
-                      <button
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '0.5rem',
-                          padding: '0.75rem 1rem',
-                          borderRadius: '12px',
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          color: 'white',
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                          fontWeight: 600,
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                        }}
-                      >
+                      <button className="btn-modal-secondary">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V21" />
                         </svg>
@@ -1496,7 +1164,6 @@ const App = () => {
                       </button>
                     </div>
                   </div>
-
                 </div>
               </div>
             </>

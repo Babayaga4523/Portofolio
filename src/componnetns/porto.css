@@ -2509,3 +2509,734 @@ section {
   }
 }
 
+/* ========================================
+   🎬 PROJECT MODAL - Cinematic Case Study
+   THE MOST MODERN & PREMIUM DESIGN
+   ======================================== */
+
+.premium-modal-content {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 24px !important;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.7) !important;
+}
+
+.project-modal-wrapper {
+  background: #09090b;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* --- ❌ Floating Close Button --- */
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: white;
+  color: black;
+  transform: rotate(90deg);
+}
+
+/* --- 🖼️ Cinematic Hero Section --- */
+.modal-hero {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #000;
+  overflow: hidden;
+}
+
+.hero-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(to top, #09090b 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Carousel Controls */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+  z-index: 20;
+}
+
+.carousel-btn:hover {
+  background: white;
+  color: black;
+}
+
+.carousel-btn.left { left: 24px; }
+.carousel-btn.right { right: 24px; }
+
+.carousel-counter {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Badges */
+.media-badge,
+.hero-category-badge {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.media-badge {
+  top: 24px;
+  left: 24px;
+  background: rgba(220, 38, 38, 0.8);
+  color: white;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.hero-category-badge {
+  bottom: auto;
+  top: 24px;
+  right: 24px;
+  left: auto;
+  background: #6366f1;
+  color: white;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* --- 📝 Content Body (Grid) --- */
+.modal-body-content {
+  padding: 40px;
+  background: linear-gradient(to bottom, #09090b, #050505);
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 992px) {
+  .modal-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+/* --- Main Column (2/3) --- */
+.modal-main {
+  min-width: 0;
+}
+
+.project-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.project-description {
+  font-size: 1.05rem;
+  color: #a1a1aa;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* Features Box */
+.features-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.section-label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #71717a;
+  margin-bottom: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-item {
+  color: #e4e4e7;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* --- Sidebar Column (1/3) --- */
+.modal-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar-group {
+  margin-bottom: 0;
+}
+
+.tech-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.tech-chip:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #a78bfa;
+}
+
+/* Buttons */
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.btn-modal-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #6366f1;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-modal-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+  color: white;
+}
+
+.btn-modal-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-modal-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+  color: white;
+}
+
+/* --- Video Container --- */
+.video-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #000;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .modal-hero {
+    height: 300px;
+  }
+
+  .modal-body-content {
+    padding: 24px;
+  }
+
+  .modal-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .project-headline {
+    font-size: 1.75rem;
+  }
+
+  .project-description {
+    font-size: 0.95rem;
+  }
+
+  .features-list {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-actions {
+    flex-direction: row;
+  }
+
+  .btn-modal-primary,
+  .btn-modal-secondary {
+    flex: 1;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+}
+
+/* ============================================
+   🎬 SMOOTH MODAL ANIMATIONS
+   ============================================ */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.premium-modal-content {
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-dialog-custom {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Modal Overlay Animation */
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+}
+
+.modal-backdrop {
+  animation: backdropFadeIn 0.3s ease-out;
+}
+
+/* ============================================
+   📺 VIDEO PLAYER IMPROVEMENTS
+   ============================================ */
+
+video {
+  display: block;
+}
+
+video::-webkit-media-controls-panel {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+/* Fullscreen button styling */
+video::-webkit-media-controls-fullscreen-button {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+video::-webkit-media-controls-fullscreen-button:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================
+   🎨 ENHANCED MOBILE HERO HEIGHT
+   ============================================ */
+@media (max-width: 768px) {
+  .modal-hero {
+    height: 400px !important; /* Increased from 300px for better video viewing */
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-hero {
+    height: 350px;
+  }
+}
+
+/* ============================================
+   ♿ ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+/* Keyboard Focus States */
+button, a {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline 0.2s;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+.btn-modal-primary:focus-visible {
+  outline: 2px solid #4f46e5;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+.btn-modal-secondary:focus-visible {
+  outline: 2px solid #a78bfa;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: more) {
+  .btn-modal-primary {
+    border: 2px solid #4f46e5;
+  }
+  
+  .btn-modal-secondary {
+    border: 2px solid white;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   💎 ENHANCED PROJECT CARD HOVER EFFECTS
+   ============================================ */
+@keyframes cardHoverGlow {
+  0%, 100% {
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25);
+  }
+}
+
+@keyframes borderShine {
+  0% {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+  100% {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+}
+
+/* Project card base styles (if not already defined) */
+.project-card {
+  background: rgba(15, 20, 25, 0.8);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Hover state dengan animation */
+.project-card:hover {
+  transform: translateY(-8px);
+  background: rgba(15, 20, 25, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  animation: cardHoverGlow 2s ease-in-out;
+}
+
+/* Glow effect on hover */
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(99, 102, 241, 0.15), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+.project-card:hover::after {
+  opacity: 1;
+}
+
+/* Project card title hover */
+.project-card h3 {
+  transition: color 0.3s;
+}
+
+.project-card:hover h3 {
+  color: #a78bfa;
+}
+
+/* Project card tech tags hover */
+.project-card .tech-tag {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  margin: 4px 4px 4px 0;
+  transition: all 0.2s;
+}
+
+.project-card:hover .tech-tag {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: scale(1.05);
+}
+
+/* Icon rotation on hover */
+.project-card svg {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.project-card:hover svg {
+  transform: rotate(10deg) scale(1.1);
+}
+
+/* Responsive card hover for touch devices */
+@media (hover: none) {
+  .project-card {
+    transform: none;
+  }
+  
+  .project-card:active {
+    transform: translateY(-4px);
+    background: rgba(15, 20, 25, 0.95);
+  }
+}
+
+/* ============================================
+   🎯 ENHANCED PROJECT CARDS IN PROJECTS SECTION
+   ============================================ */
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.projects-container .project-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.projects-container .project-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+  background: rgba(15, 20, 25, 0.98);
+}
+
+/* Project card image hover zoom */
+.project-card img {
+  transition: transform 0.3s ease-out;
+}
+
+.project-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Badge animation */
+.project-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #a78bfa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  }
+}
+
+/* ============================================
+   🔘 BUTTON ENHANCEMENTS
+   ============================================ */
+.btn-modal-primary,
+.btn-modal-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ripple effect on click */
+.btn-modal-primary::before,
+.btn-modal-secondary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.btn-modal-primary:active::before,
+.btn-modal-secondary:active::before {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Enhanced carousel button hover */
+.carousel-btn {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.carousel-btn:hover {
+  background: rgba(99, 102, 241, 0.8);
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+.carousel-btn:active {
+  transform: scale(0.95);
+}
+
