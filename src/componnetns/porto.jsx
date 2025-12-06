@@ -1,974 +1,1630 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './porto.css';
-import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
-import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import { MdHome, MdPerson, MdCode, MdSchool, MdContactMail } from 'react-icons/md';
+import { FaWhatsapp } from 'react-icons/fa';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// Tambahkan import AOS
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { Modal, Card, Row, Col } from 'react-bootstrap';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
-  const [darkMode, setDarkMode] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const sectionRefs = useRef({});
-
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-const certificates = [
-    {
-      title: "Aptitude Test",
-      issuer: "LEPKom UG",
-      date: "July 23, 2025",
-      image: "/certificates/Aptitude Test.png",
-      description: "Professional aptitude assessment test demonstrating analytical and problem-solving capabilities."
-    },
-    {
-      title: "Creating Business Intelligence",
-      issuer: "MySkill",
-      date: "May 27, 2025",
-      image: "/certificates/Creating Business Intelligence.png",
-      description: "Advanced business intelligence concepts, data analytics, and strategic decision-making tools."
-    },
-    {
-      title: "Data Preparation for Business Processes",
-      issuer: "MySkill",
-      date: "September 23, 2024",
-      image: "/certificates/Data Preparation for Business Processes.png",
-      description: "Data management and preparation techniques for business process optimization and analysis."
-    },
-    {
-      title: "JAVA FOR INTERMEDIATE",
-      issuer: "LEPKom UG",
-      date: "August 19, 2024",
-      image: "/certificates/JAVA FOR INTERMEDIATE.png",
-      description: "Intermediate Java programming covering advanced OOP concepts, data structures, and design patterns."
-    },
-    {
-      title: "WIDE AREA NETWORK USING CISCO ROUTER FOR INTERMEDIATE",
-      issuer: "LEPKom UG",
-      date: "February 19, 2024",
-      image: "/certificates/WIDE AREA NETWORK USING CISCO ROUTER FOR INTERMEDIATE.png",
-      description: "Advanced WAN configuration and management using Cisco routing technologies for intermediate level."
-    },
-    {
-      title: "JAVA PROGRAMMING FOR BEGINNER",
-      issuer: "LEPKom UG",
-      date: "August 21, 2023",
-      image: "/certificates/JAVA PROGRAMMING FOR BEGINNER.png",
-      description: "Fundamental Java programming course covering object-oriented concepts, syntax, and basic application development."
-    },
-    {
-      title: "Building Website using HTML 5",
-      issuer: "LEPKom UG",
-      date: "May 30, 2023",
-      image: "/certificates/Building Website using HTML 5.png",
-      description: "Modern web development using HTML5, covering semantic markup, multimedia, and responsive design."
-    },
-    {
-      title: "LOCAL AREA NETWORK USING CISCO ROUTER",
-      issuer: "LEPKom UG",
-      date: "February 20, 2023",
-      image: "/certificates/LOCAL AREA NETWORK USING CISCO ROUTER.png",
-      description: "Hands-on training in configuring and managing Local Area Networks using Cisco routing equipment."
-    },
-    {
-      title: "FUNDAMENTAL DESKTOP PROGRAMMING",
-      issuer: "LEPKom UG",
-      date: "August 22, 2022",
-      image: "/certificates/FUNDAMENTAL DESKTOP PROGRAMMING.png",
-      description: "Introduction to desktop application development, covering basic programming concepts and GUI development."
-    },
-    {
-      title: "FUNDAMENTAL NETWORKING",
-      issuer: "LEPKom UG",
-      date: "February 21, 2022",
-      image: "/certificates/FUNDAMENTAL NETWORKING.png",
-      description: "Comprehensive course covering fundamental networking concepts, protocols, and network architecture."
-    },
-    {
-      title: "SERTIFIKAT MAGANG DAN STUDI INDEPENDEN BERSERTIFIKAT",
-      issuer: "Kampus Merdeka",
-      date: "June 30, 2024",
-      image: "/certificates/studi independent.png",
-      description: "Official certification for completing the Magang dan Studi Independen Bersertifikat (MSIB) program."
-    },
-    {
-      title: "SERTIFIKAT KEPESERTAAN STUDI INDEPENDEN BERSERTIFIKAT ANGKATAN 6",
-      issuer: "Kampus Merdeka",
-      date: "June 30, 2024",
-      image: "/certificates/stupen 2.png",
-      description: "Certificate of participation in the 6th batch of Studi Independen Bersertifikat program."
-    },
-    {
-      title: "INTERNET INTRODUCTION",
-      issuer: "MySkill",
-      date: "October 24, 2023",
-      image: "/certificates/internet connection.png",
-      description: "Fundamental concepts of internet technology, protocols, and online communication systems."
-    },
-    {
-      title: "INTRODUCTION TO LOOKER DATA STUDIO",
-      issuer: "MySkill",
-      date: "October 31, 2023",
-      image: "/certificates/introduction looker studio.png",
-      description: "Data visualization and business intelligence using Google Looker Data Studio for reporting and analytics."
-    },
-    {
-      title: "INTRODUCTION TO FIGMA",
-      issuer: "MySkill",
-      date: "October 31, 2023",
-      image: "/certificates/introduction figma.png",
-      description: "Fundamental course introducing Figma interface, basic design principles, and collaborative features."
-    },
-    {
-      title: "FIGMA TOOLS",
-      issuer: "MySkill",
-      date: "November 10, 2023",
-      image: "/certificates/figmaa tools.png",
-      description: "Mastery of Figma design tools, covering interface design, prototyping, and collaborative workflows."
-    },
-    {
-      title: "Building Website Using HTML5",
-      issuer: "FIKTI Learning",
-      date: "May 30, 2023",
-      image: "/certificates/Building Website using HTML 5.png",
-      description: "Web development fundamentals using HTML5, covering modern markup and responsive web design principles."
-    }
+  // Projects Data
+  const projects = [
+    { title: 'Rental HS - Modern Car Rental App', desc: 'Modern car rental application with AI integration for personalized recommendations. Built with TypeScript, React 19, and Vite for optimal performance. Features AI assistant, smart filtering, and responsive design.', tech: ['React 19', 'TypeScript', 'Vite', 'AI Integration'], images: ['/rental hs1.png', '/rental hs2.png', '/rental hs3.png', '/rental hs4.png', '/rental hs5.png'], link: 'https://rental-hs.vercel.app/' },
+    { title: 'Kelasku1 - CBT Exam System', desc: 'Computer-Based Test Platform with mobile-first design. Frontend built with Next.js, TypeScript, and Tailwind CSS. Backend with Laravel and MySQL. Features student dashboard, real-time exam interface, automatic scoring, results via email, and admin panel with JWT authentication.', tech: ['Next.js', 'Laravel', 'MySQL', 'TypeScript', 'JWT'], images: ['/cbt 1.png', '/cbt 2.png', '/cbt 3.png', '/cbt 4.png', '/cbt 5.png', '/cbt 6.png', '/cbt 7.png', '/cbt 8.png', '/cbt 9.png', '/cbt 10.png', '/cbt 11.png', '/cbt 12.png', '/cbt 13.png'], link: 'https://kelasku-frontend.vercel.app/' },
+    { title: 'SYStream - Netflix-Inspired Platform', desc: 'Modern film streaming application integrated with TMDB API. Built with React 18, TypeScript, and Vite. Responsive design with custom video player featuring progress tracking and error handling.', tech: ['React 18', 'TypeScript', 'TMDB API', 'Tailwind CSS'], images: ['/movieku.png'], link: 'https://movieku-nine.vercel.app/' },
+    { title: 'Multi-Feature Computer Vision Application', desc: 'Desktop application with CLI and GUI interfaces using Python. Integrated real-time detection modules via webcam: Face, Motion, Emotion, Mask, Pose, Hand Gesture, Age & Gender Detection, and YOLO Object Detection.', tech: ['Python', 'OpenCV', 'YOLO', 'Face Detection'], images: ['/ml.png'], video: '/cv_demo.mp4' },
+    { title: 'Point of Sale (POS) System', desc: 'Fully functional Laravel-based web POS system with sales processing, inventory management, and real-time employee attendance. Generates comprehensive reports for data-informed business analysis.', tech: ['Laravel', 'PHP', 'MySQL'], images: ['/kasir 1.png', '/kasir 2.png', '/kasir 3.png', '/kasir 4.png', '/kasir 5.png', '/kasir 6.png'] },
+    { title: 'Car Rental Website (Full-Stack)', desc: 'Full-stack car rental application using React.js and Node.js/Express.js with secure payment gateway. AI-powered chatbot for 24/7 customer support and pricing recommendation model for optimal rates.', tech: ['React.js', 'Node.js', 'Express.js', 'AI Chatbot'], images: ['/rental 1.png', '/rental 2.png', '/rental 3.png', '/rental 4.png', '/rental 5.png', '/rental 6.png', '/rental 7.png', '/rental 8.png', '/rental 9.png', '/rental 10.png', '/rental 11.png', '/rental 12.png', '/rental 13.png', '/rental 14.png'] },
+    { title: 'E-Commerce Website - Pawon Sekar', desc: 'Food e-commerce website built with PHP and JavaScript. Designed to increase order efficiency by 30% through online ordering system and comprehensive admin dashboard.', tech: ['PHP', 'JavaScript', 'Bootstrap'], images: ['/Pawon.jpg'] },
+    { title: 'Resto Padang Benerang E-Commerce', desc: 'Full-stack e-commerce system using PHP Native and MySQL with dual roles for customers and admins. Features complete reporting module for sales, inventory, and transactions.', tech: ['PHP', 'MySQL', 'Bootstrap'], images: ['/padang benerang.png', '/resto 1.png', '/resto 2.png', '/resto 3.png', '/resto 4.png', '/resto 5.png'] },
+    { title: 'NFT Creation & Publishing', desc: 'Designed and published Non-Fungible Tokens (NFTs) as part of Web3 project. Includes asset design and deployment on blockchain platforms with interactive features.', tech: ['Web3', 'Blockchain', 'NFT'], images: ['/NFT.jpg'] },
+    { title: 'Generated 2D Animation', desc: 'Developed code-generated 2D animations using programming for interactive visual exploration and experimentation.', tech: ['JavaScript', 'Canvas API'], images: ['/kodok.jpg'] },
   ];
 
-  // WhatsApp send handler
-  const handleWhatsAppSend = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const subject = form.subject.value;
-    const message = form.message.value;
+  // Skills Data
+  const skillCategories = [
+    { title: 'Frontend', skills: ['React.js', 'React 19', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Bootstrap', 'HTML5', 'CSS3'] },
+    { title: 'Backend', skills: ['Node.js', 'Express.js', 'Laravel', 'PHP', 'Python', 'MySQL', 'SQL', 'Ruby on Rails'] },
+    { title: 'AI & CV', skills: ['Python', 'YOLO', 'OpenCV', 'Face Detection', 'Emotion Detection', 'Pose Detection'] },
+    { title: 'Tools & Tech', skills: ['Git/GitHub', 'VS Code', 'Vite', 'Postman', 'Laragon', 'Blender', 'Adobe Illustrator'] },
+  ];
 
-    const whatsappNumber = "6281294743876"; // tanpa +
-    const text = `Name: ${name}%0AEmail: ${email}%0ASubject: ${subject}%0AMessage: ${message}`;
-    const url = `https://wa.me/${whatsappNumber}?text=${text}`;
+  // Certificates Data
+  const certificates = [
+    { title: "Aptitude Test", issuer: "LEPKom UG", date: "July 2025", image: "/certificates/Aptitude Test.png", description: "Professional aptitude assessment test demonstrating analytical and problem-solving capabilities.", type: "Testing" },
+    { title: "Creating Business Intelligence", issuer: "MySkill", date: "May 2025", image: "/certificates/Creating Business Intelligence.png", description: "Advanced business intelligence concepts, data analytics, and strategic decision-making tools.", type: "Analytics" },
+    { title: "Data Preparation for Business Processes", issuer: "MySkill", date: "September 2024", image: "/certificates/Data Preparation for Business Processes.png", description: "Data management and preparation techniques for business process optimization.", type: "Data" },
+    { title: "Java for Intermediate", issuer: "LEPKom UG", date: "August 2024", image: "/certificates/JAVA FOR INTERMEDIATE.png", description: "Intermediate Java programming covering advanced OOP concepts and design patterns.", type: "Programming" },
+    { title: "Wide Area Network Using Cisco Router for Intermediate", issuer: "LEPKom UG", date: "February 2024", image: "/certificates/WIDE AREA NETWORK USING CISCO ROUTER FOR INTERMEDIATE.png", description: "Advanced networking concepts using Cisco routers for enterprise infrastructure.", type: "Networking" },
+    { title: "Java Programming for Beginner", issuer: "LEPKom UG", date: "August 2023", image: "/certificates/JAVA PROGRAMMING FOR BEGINNER.png", description: "Foundational Java programming covering core concepts and object-oriented principles.", type: "Programming" },
+    { title: "Building Website using HTML 5", issuer: "LEPKom UG", date: "May 2023", image: "/certificates/Building Website using HTML 5.png", description: "Modern web development using HTML5 and responsive design principles.", type: "Web Development" },
+    { title: "Local Area Network Using Cisco Router", issuer: "LEPKom UG", date: "February 2023", image: "/certificates/LOCAL AREA NETWORK USING CISCO ROUTER.png", description: "LAN setup and configuration using Cisco routing equipment.", type: "Networking" },
+    { title: "Fundamental Desktop Programming", issuer: "LEPKom UG", date: "August 2022", image: "/certificates/FUNDAMENTAL DESKTOP PROGRAMMING.png", description: "Basic desktop application development fundamentals and best practices.", type: "Programming" },
+    { title: "Fundamental Networking", issuer: "LEPKom UG", date: "N/A", image: "/certificates/FUNDAMENTAL NETWORKING.png", description: "Network fundamentals including protocols, architectures, and communication.", type: "Networking" },
+    { title: "Introduction to Figma", issuer: "Self-Learning", date: "2024", image: "/certificates/introduction figma.png", description: "UI/UX design fundamentals using Figma design tool.", type: "Design" },
+    { title: "Figma Tools", issuer: "Self-Learning", date: "2024", image: "/certificates/figmaa tools.png", description: "Advanced Figma tools and features for professional design workflows.", type: "Design" },
+    { title: "Introduction to Looker Studio", issuer: "Google", date: "2024", image: "/certificates/introduction looker studio.png", description: "Data visualization and business intelligence using Google Looker Studio.", type: "Analytics" },
+    { title: "MSIB Certificate", issuer: "Kampus Merdeka", date: "2024", image: "/certificates/studi independent.png", description: "Independent learning program certificate from Kampus Merdeka initiative.", type: "Achievement" },
+  ];
 
-    window.open(url, "_blank");
-  };
-
+  // Initialize Scroll Spy
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'experience', 'projects', 'skills', 'certificates', 'contact'];
-      const scrollPosition = window.scrollY + 100;
+      const sections = ['home', 'about', 'projects', 'skills', 'certificates', 'contact'];
+      const scrollY = window.scrollY + 200;
 
-      // Section highlight
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetHeight = element.offsetHeight;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
-          }
+      sections.forEach(sec => {
+        const element = document.getElementById(sec);
+        if (element && scrollY >= element.offsetTop && scrollY < element.offsetTop + element.offsetHeight) {
+          setActiveSection(sec);
         }
-      }
-      // Shadow effect
-      setScrolled(window.scrollY > 10);
+      });
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Tambahkan efek animasi saat section aktif
-  useEffect(() => {
-    if (sectionRefs.current[activeSection]) {
-      sectionRefs.current[activeSection].classList.remove('section-animate');
-      // Trigger reflow for restart animation
-      void sectionRefs.current[activeSection].offsetWidth;
-      sectionRefs.current[activeSection].classList.add('section-animate');
-    }
-  }, [activeSection]);
-
-  // Inisialisasi AOS
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: false,
-      mirror: true,
-    });
-  }, []);
-
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
-
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop - 80,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleMenuToggle = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const projects = [
-    { title: 'Rental HS - Modern Car Rental App', desc: 'Modern car rental application with AI integration for personalized recommendations. Built with TypeScript, React 19, and Vite for optimal performance. Features include AI assistant, smart filtering, and responsive design.', tech: ['TypeScript', 'React 19', 'Vite', 'Framer Motion', 'React Bootstrap', 'OpenRouter API'], images: ['/rental hs1.png', '/rental hs2.png', '/rental hs3.png', '/rental hs4.png', '/rental hs5.png', '/rental hs6.png', '/rental hs7.png', '/rental hs8.png', '/rental hs9.png', '/rental hs10.png'], link: 'https://rental-hs.vercel.app/' },
-    { title: 'SYStream Movie App', desc: 'Showcasing "SYStream" - a full-stack, Netflix-inspired movie streaming web app, demonstrating advanced React/TypeScript development capabilities. Built with React 18 and TypeScript for robust architecture. Utilizes Vite for fast build/dev cycles and Tailwind CSS/Bootstrap for UI/UX. Integrates TMDB API for comprehensive movie data. Features custom video player with progress saving and robust error handling. Implements advanced filtering, search, and responsive design.', tech: ['React 18', 'TypeScript', 'Vite', 'Tailwind CSS', 'Bootstrap', 'TMDB API'], images: ['/movieku.png'], link: 'https://movieku-nine.vercel.app/' },
-    { title: 'CBT (Computer-Based Test) System', desc: 'Developed a full-stack Computer-Based Test (CBT) application using Next.js for the frontend and Laravel for the backend.', tech: ['Next.js','Laravel'], images: ['/cbt 1.png', '/cbt 2.png', '/cbt 3.png','/cbt 4.png', '/cbt 5.png', '/cbt 6.png', '/cbt 7.png', '/cbt 8.png', '/cbt 9.png', '/cbt 10.png', '/cbt 11.png', '/cbt 12.png', '/cbt 13.png'], link: 'https://kelasku-frontend.vercel.app/' },
-    { title: 'Multi-Feature Computer Vision Application', desc: 'Developed a comprehensive desktop application using Python with both CLI and GUI interfaces. Integrated various real-time detection modules via webcam, including: Face, Motion, Emotion, Mask, Pose, Hand Gesture, Age & Gender Detection, and Object Detection (YOLO).', tech: ['Python','OpenCV','YOLO'], images: ['/ml.png'], video: '/cv_demo.mp4' },
-    { title: 'Point of Sale (POS) System', desc: 'Built a functional web-based POS system using the Laravel framework for efficient sales, product, and transaction report management.', tech: ['Laravel','PHP','MySQL'], images: ['/kasir 1.png', '/kasir 2.png', '/kasir 3.png', '/kasir 4.png', '/kasir 5.png', '/kasir 6.png'] },
-    { title: 'Padang Berenang Resto', desc: 'Developed a comprehensive restaurant management system for Padang Berenang Resto featuring order management, menu administration, customer reservations, and sales reporting with modern web technologies.', tech: ['PHP','JavaScript','MySQL','Bootstrap'], images: ['/resto 1.png', '/resto 2.png', '/resto 3.png', '/resto 4.png', '/resto 5.png'] },
-    { title: 'Car Rental Website (Full-Stack)', desc: 'Developed a full-stack car rental web application using React.js (frontend) and Node.js/Express.js (backend), featuring a secure payment gateway and booking system integration.', tech: ['React.js','Node.js','Express.js'], images: ['/rental.jpg', '/rental 1.png', '/rental 2.png', '/rental 3.png', '/rental 4.png', '/rental 5.png', '/rental 6.png', '/rental 7.png', '/rental 8.png', '/rental 9.png', '/rental 10.png', '/rental 11.png', '/rental 12.png', '/rental 13.png', '/rental 14.png'] },
-    { title: 'E-Commerce Website "Pawon Sekar"', desc: 'Built a food e-commerce website with PHP and JavaScript, designed to increase order efficiency by 30% through an online ordering system and an admin dashboard.', tech: ['PHP','JavaScript','MySQL'], images: ['/Pawon.jpg'] },
-    { title: 'Personal Portfolio Website', desc: 'Built using React.js to showcase certificates, personal information, and contact details.', tech: ['React.js','CSS3','JavaScript'], images: ['/porto.png'] },
-    { title: 'NFT Creation', desc: 'Designed and published Non-Fungible Tokens (NFTs) as part of a Web3 project, including asset design and deployment on blockchain platforms.', tech: ['Web3','Blockchain','NFT'], images: ['/NFT.jpg'] },
-    { title: 'Generated 2D Animation', desc: 'Developed code-generated 2D animations for interactive visual exploration and experimentation.', tech: ['Adobe Illustrator','Canvas','Animation'], images: ['/kodok.jpg'] }
-  ];
-
-  const handleCardClick = (project) => {
+  // Handlers
+  const handleProjectClick = (project) => {
     setSelectedProject(project);
-    setCurrentSlide(0);
+    setCurrentImageIndex(0);
     setShowModal(true);
   };
-
-  const handleClose = () => setShowModal(false);
 
   const handleCertificateClick = (certificate) => {
     setSelectedCertificate(certificate);
     setShowCertificateModal(true);
   };
 
-  const handleCertificateClose = () => setShowCertificateModal(false);
-
-  const handleNextSlide = () => {
-    if (selectedProject && selectedProject.images) {
-      setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
-    }
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handlePrevSlide = () => {
-    if (selectedProject && selectedProject.images) {
-      setCurrentSlide((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
-    }
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText('yogacode86@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleImageClick = () => {
-    handleNextSlide();
+  const handleDownloadCV = () => {
+    const fileName = 'CV_Yoga_Krisna_Utama.pdf';
+    const link = document.createElement('a');
+    link.href = `/${fileName}`;
+    link.download = 'CV_Yoga Krisna Utama.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Simple Video Component
+  const VideoPlayer = ({ src }) => {
+    const [hasError, setHasError] = useState(false);
+
+    if (hasError) {
+      return (
+        <div style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#000',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <div style={{ fontSize: '3rem' }}>🎬</div>
+          <p>Video tidak dapat dimainkan</p>
+          <a 
+            href={src} 
+            download
+            style={{
+              marginTop: '1rem',
+              padding: '0.75rem 1.5rem',
+              background: '#6366f1',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              fontSize: '0.875rem'
+            }}
+          >
+            Download Video
+          </a>
+        </div>
+      );
+    }
+
+    return (
+      <video 
+        width="100%"
+        height="100%"
+        controls
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          backgroundColor: '#000',
+          display: 'block'
+        }}
+        onError={() => {
+          console.error('Video failed to load:', src);
+          setHasError(true);
+        }}
+      >
+        <source src={src} type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+    );
   };
 
   return (
-    <div className={`portfolio-app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      {/* Theme toggle */}
-      <button className="theme-toggle" onClick={toggleTheme}>
-        {darkMode ? '☀️' : '🌙'}
-      </button>
+    <div className="app-container">
+      {/* Background Effects */}
+      <div className="noise-overlay"></div>
+      <div className="gradient-orb orb-1"></div>
+      <div className="gradient-orb orb-2"></div>
 
-      {/* Navigation */}
-      <nav
-  className={`navbar navbar-expand-lg custom-navbar shadow-sm fixed-top${scrolled ? ' navbar-scrolled' : ''} ${darkMode ? 'navbar-dark' : 'navbar-light'}`}
-  style={{ minHeight: 72, padding: 0 }}
->
-  <div className="container nav-animated d-flex flex-row align-items-center justify-content-between px-3">
-    {/* Brand Centered */}
-
-    {/* Hamburger on right for mobile */}
-    <button
-      className={`navbar-toggler${menuOpen ? ' open' : ''}`}
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#mainNavbar"
-      aria-controls="mainNavbar"
-      aria-expanded={menuOpen ? "true" : "false"}
-      aria-label="Toggle navigation"
-      onClick={handleMenuToggle}
-      style={{ border: 'none', outline: 'none', marginLeft: 'auto' }}
-    >
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div
-      className={`collapse navbar-collapse justify-content-center nav-animated${menuOpen ? ' show' : ''}`}
-      id="mainNavbar"
-    >
-      <ul className="navbar-nav gap-4 py-2"
-        style={{ fontSize: '1.15rem', fontWeight: 600 }}>
+      {/* --- FLOATING DOCK NAVIGATION --- */}
+      <nav className="floating-dock">
         {[
-          { id: 'home', label: 'Home' },
-          { id: 'about', label: 'About' },
-          { id: 'experience', label: 'Experience' },
-          { id: 'projects', label: 'Projects' },
-          { id: 'skills', label: 'Skills' },
-          { id: 'certificates', label: 'Certificates' },
-          { id: 'contact', label: 'Contact' }
-        ].map((item, idx) => (
-          <li className="nav-item" key={item.id}
-            style={{
-              animation: menuOpen
-                ? `fadeInNav 0.4s ${0.08 * idx + 0.1}s both`
-                : undefined
-            }}>
-            <a
-              className={`nav-link px-3${activeSection === item.id ? ' active' : ''}`}
-              href={`#${item.id}`}
-              style={{
-                borderRadius: 12,
-                transition: 'background 0.18s, color 0.18s',
-                position: 'relative',
-                letterSpacing: '0.5px',
-              }}
-              onClick={e => {
-                e.preventDefault();
-                scrollToSection(item.id);
-                setMenuOpen(false);
-              }}
-            >
-              {item.label}
-            </a>
-          </li>
+          { id: 'home', icon: <MdHome />, label: 'Home' },
+          { id: 'about', icon: <MdPerson />, label: 'About' },
+          { id: 'projects', icon: <MdCode />, label: 'Projects' },
+          { id: 'skills', icon: <MdSchool />, label: 'Skills' },
+          { id: 'contact', icon: <MdContactMail />, label: 'Contact' }
+        ].map((item) => (
+          <div
+            key={item.id}
+            className={`dock-item ${activeSection === item.id ? 'active' : ''}`}
+            onClick={() => scrollTo(item.id)}
+            role="button"
+            tabIndex="0"
+            aria-label={item.label}
+          >
+            {item.icon}
+            <span className="dock-tooltip">{item.label}</span>
+          </div>
         ))}
-      </ul>
-    </div>
-  </div>
-</nav>
+      </nav>
 
-      {/* Main content */}
-      <main>
-        {/* Hero section */}
-        <section
-          id="home"
-          className="hero-section aos-section"
-          ref={el => (sectionRefs.current['home'] = el)}
-          data-aos="fade-in"
-        >
-            <div className="hero-content">
-                <div className="hero-text">
-                    <h4>Hello, I'm</h4>
-                    <h1>Yoga Krisna Utama</h1>
-                    <h3>Information Systems Student & Web Developer</h3>
-                    <p>Creating digital experiences with modern technologies and innovative solutions.</p>
-                    <div className="hero-buttons">
-                        <button
-                            className="primary-btn"
-                            type="button"
-                            onClick={() => scrollToSection('contact')}
-                        >
-                            Contact Me
-                        </button>
-                        <button
-                            className="secondary-btn"
-                            type="button"
-                            onClick={() => scrollToSection('projects')}
-                        >
-                            View Projects
-                        </button>
-                    </div>
-                </div>
-                <div className="hero-image">
-                    <div className="image-container">
-                        <div className="glow-effect"></div>
-                        <div className="profile-image" style={{ backgroundImage: "url('/yoga.jpg')" }}></div>
-                    </div>
-                </div>
-            </div>
-            <div className="scroll-indicator" onClick={() => scrollToSection('about')} style={{ cursor: 'pointer' }}>
-                <span>Scroll Down</span>
-                <div className="arrow-down"></div>
-            </div>
-        </section>
-        <section
-          id="about"
-          className="about-section aos-section"
-          ref={el => (sectionRefs.current['about'] = el)}
-          data-aos="fade-up"
-        >
-          <h2 className="section-title">About Me</h2>
-          <div className="about-container">
-            {/* Main Introduction Card */}
-            <div className="about-main-card">
-              <div className="about-header">
-                <div className="about-avatar">
-                  <img src="/yoga.jpg" alt="Yoga Krisna Utama" />
-                </div>
-                <div className="about-intro">
-                  <h3>Yoga Krisna Utama</h3>
-                  <p className="about-role">Information Systems Student & Web Developer</p>
-                  <p className="about-summary">
-                    An Information Systems graduate from Gunadarma University (GPA: 3.60/4.00) with a deep interest in developing machine learning and computer vision-based applications. Seeking an opportunity to contribute in a Software Engineer role where I can apply my skills in Python, object detection model development, and software engineering to create innovative technological solutions.
-                  </p>
-                </div>
-              </div>
-            </div>
+      {/* --- HERO SECTION: The Digital Architect --- */}
+      <section 
+        id="home" 
+        className="hero-section relative overflow-hidden py-20"
+        onMouseMove={(e) => {
+          const { clientX, clientY } = e;
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          setMousePosition({
+            x: (clientX - centerX) / 50,
+            y: (clientY - centerY) / 50,
+          });
+        }}
+        style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
+      >
+        {/* --- Ambient Background Effects --- */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+          {/* Massive Glow Top Left */}
+          <div style={{
+            position: 'absolute',
+            top: '-20%',
+            left: '-10%',
+            width: '800px',
+            height: '800px',
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent)',
+            borderRadius: '50%',
+            filter: 'blur(120px)'
+          }} />
+          {/* Secondary Glow Bottom Right */}
+          <div style={{
+            position: 'absolute',
+            bottom: '10%',
+            right: '10%',
+            width: '600px',
+            height: '600px',
+            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.1), transparent)',
+            borderRadius: '50%',
+            filter: 'blur(100px)'
+          }} />
+          
+          {/* Grid Pattern Overlay */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            opacity: 0.5
+          }} />
+        </div>
 
-            {/* Education Card */}
-            <div className="about-card education-card">
-              <div className="card-icon">
-                <span className="icon-graduation">🎓</span>
+        <Container>
+          <Row className="align-items-center g-5">
+            
+            {/* --- LEFT CONTENT: The Hook --- */}
+            <Col lg={7}>
+              
+              {/* 1. Status Badge (Pulsing) */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                paddingLeft: '1rem',
+                paddingRight: '1rem',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+                borderRadius: '100px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(12px)',
+                marginBottom: '2rem',
+                animation: 'fadeInUp 0.8s ease-out forwards'
+              }}>
+                <span style={{
+                  position: 'relative',
+                  display: 'flex',
+                  height: '12px',
+                  width: '12px'
+                }}>
+                  <span style={{
+                    animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: '50%',
+                    background: '#34d399',
+                    opacity: 0.75
+                  }} />
+                  <span style={{
+                    position: 'relative',
+                    display: 'flex',
+                    borderRadius: '50%',
+                    height: '12px',
+                    width: '12px',
+                    background: '#34d399'
+                  }} />
+                </span>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#6ee7b7',
+                  letterSpacing: '0.05em'
+                }}>Available for New Opportunities</span>
               </div>
-              <div className="card-content">
-                <h4>Education</h4>
-                <div className="education-details">
-                  <h5>Bachelor of Information Systems</h5>
-                  <p className="institution">Gunadarma University</p>
-                  <p className="duration">2021 – September 17, 2025</p>
-                  <p className="gpa">GPA: 3.60/4.00</p>
+
+              {/* 2. Main Headline */}
+              <h1 style={{
+                fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
+                fontWeight: 700,
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
+                marginBottom: '1.5rem',
+                color: 'white'
+              }}>
+                Designing the <br />
+                <span style={{
+                  background: 'linear-gradient(to right, white, rgba(200, 200, 200, 0.8), rgba(100, 100, 100, 0.6))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>Future with</span>
+                <span style={{
+                  display: 'block',
+                  marginTop: '0.5rem',
+                  background: 'linear-gradient(to right, #60a5fa, #a78bfa)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                  Intelligent Systems.
+                </span>
+              </h1>
+
+              {/* 3. Subtext */}
+              <p style={{
+                fontSize: '1.125rem',
+                color: '#a1a1aa',
+                lineHeight: 1.7,
+                marginBottom: '2.5rem',
+                maxWidth: '600px'
+              }}>
+                I am <strong style={{ color: 'white' }}>Yoga Krisna Utama</strong>, an Information Systems graduate from Gunadarma University (GPA: 3.60/4.00) with proven expertise in <span style={{ color: '#60a5fa' }}>Full-Stack Web Development</span> and <span style={{ color: '#a78bfa' }}>AI Integration</span>. Passionate about merging software engineering with machine learning to create intelligent solutions.
+              </p>
+
+              {/* 4. Action Buttons */}
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                marginBottom: '3rem',
+                position: 'relative',
+                zIndex: 10
+              }}>
+                <button 
+                  onClick={() => scrollTo('projects')}
+                  style={{
+                    padding: '1rem 2rem',
+                    background: 'white',
+                    color: 'black',
+                    border: 'none',
+                    borderRadius: '100px',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                    fontSize: '1rem',
+                    position: 'relative',
+                    zIndex: 10
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                  className="group"
+                >
+                  Explore My Work
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transition: 'transform 0.3s' }}>
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </button>
+                
+                <button 
+                  onClick={handleDownloadCV}
+                  style={{
+                    padding: '1rem 2rem',
+                    background: 'transparent',
+                    color: 'white',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '100px',
+                    fontWeight: 500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                    textDecoration: 'none',
+                    fontSize: '1rem',
+                    position: 'relative',
+                    zIndex: 10
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.borderColor = 'white';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'transparent';
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  Download CV
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* 5. Quick Stats (Social Proof) */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2rem',
+                fontSize: '0.875rem',
+                color: '#64748b',
+                fontWeight: 500,
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                paddingTop: '2rem',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  North Bekasi, Indonesia
                 </div>
-              </div>
-            </div>
-
-            {/* Core Competencies Card */}
-            <div className="about-card competencies-card">
-              <div className="card-icon">
-                <span className="icon-competencies">💡</span>
-              </div>
-              <div className="card-content">
-                <h4>Core Competencies</h4>
-                <div className="competencies-grid">
-                  <div className="competency-item">
-                    <span className="competency-icon">🚀</span>
-                    <span>Technical Leadership</span>
-                  </div>
-                  <div className="competency-item">
-                    <span className="competency-icon">🔍</span>
-                    <span>Analytical Thinking</span>
-                  </div>
-                  <div className="competency-item">
-                    <span className="competency-icon">⚡</span>
-                    <span>Agile Development</span>
-                  </div>
-                  <div className="competency-item">
-                    <span className="competency-icon">✅</span>
-                    <span>Quality Assurance</span>
-                  </div>
-                  <div className="competency-item">
-                    <span className="competency-icon">🤝</span>
-                    <span>Client Collaboration</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Soft Skills Card */}
-            <div className="about-card soft-skills-card">
-              <div className="card-icon">
-                <span className="icon-soft-skills">🌟</span>
-              </div>
-              <div className="card-content">
-                <h4>Soft Skills</h4>
-                <div className="soft-skills-grid">
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">💬</span>
-                    <span>Effective Communication</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">👥</span>
-                    <span>Team Collaboration</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">⏰</span>
-                    <span>Time Management</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">🎨</span>
-                    <span>Creativity</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">❤️</span>
-                    <span>Empathy</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">🤝</span>
-                    <span>Responsibility</span>
-                  </div>
-                  <div className="soft-skill-item">
-                    <span className="soft-skill-icon">🔒</span>
-                    <span>Trustworthiness</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Experience section */}
-        <section
-          id="experience"
-          className="experience-section aos-section"
-          ref={el => (sectionRefs.current['experience'] = el)}
-          data-aos="fade-up"
-        >
-          <h2 className="section-title">Experience</h2>
-          <div className="timeline">
-            {/* Timeline Item 1 */}
-            <div className="timeline-item">
-              <div className="timeline-date">Feb 16, 2024 - Jun 30, 2024</div>
-              <div className="timeline-content">
-                <h3>Non-Fungible Token (NFT) Development in Web3 Era</h3>
-                <p>
-                  Contributed to a Web3-based development project centered on Non-Fungible Tokens (NFTs), 
-                  where I conducted technical research, participated in discussions, and developed interactive 
-                  features within the app. Collaborated with a multidisciplinary team to implement blockchain 
-                  integration and enhance the usability and educational value of NFT-based content for users 
-                  in the aquaculture domain.
-                </p>
-              </div>
-            </div>
-            {/* Timeline Item 2 */}
-            <div className="timeline-item">
-              <div className="timeline-date">Jun 2, 2024 - Jun 26, 2024</div>
-              <div className="timeline-content">
-                <h3>Event Crew – Provalliant</h3>
-                <p>
-                  Successfully managed logistics for several large-scale public events with over 1,000 attendees at 3 prominent locations (Dufan, AEON Mall Deltamas, Mall of Indonesia), ensuring a smooth event flow from preparation to completion.
-                </p>
-              </div>
-            </div>
-            {/* Timeline Item 3 */}
-            <div className="timeline-item">
-              <div className="timeline-date">Jun 8, 2024 - Present</div>
-              <div className="timeline-content">
-                <h3>Karang Taruna</h3>
-                <p>
-                  Active member contributing to youth social initiatives, community service, and event coordination.
-                </p>
-              </div>
-            </div>
-            {/* Timeline Item 4 */}
-            <div className="timeline-item">
-              <div className="timeline-date">Feb 14 - 15, 2024</div>
-              <div className="timeline-content">
-                <h3>KPPS Committee Member (Voting Group 2)</h3>
-                <p>
-                  Participated as an official member in the presidential and vice-presidential election team, 
-                  supporting the coordination and execution of the voting process.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Projects section */}
-        <section
-          id="projects"
-          className="projects-section aos-section"
-          ref={el => (sectionRefs.current['projects'] = el)}
-          data-aos="fade-up"
-        >
-          <h2 className="section-title">Projects</h2>
-          <div className="container">
-            <Row>
-              {projects.map((project, index) => (
-                <Col xs={12} md={6} lg={4} key={index} className="mb-4">
-                  <Card className="project-card-modern h-100" onClick={() => handleCardClick(project)}>
-                    <Card.Img variant="top" src={project.images[0]} alt={project.title} />
-                    <Card.Body className="d-flex flex-column">
-                      <Card.Title className="text-center">{project.title}</Card.Title>
-                      <Card.Text className="text-muted text-center flex-grow-1">{project.desc.split('.')[0]}.</Card.Text>
-                      <div className="tech-badges">
-                        {project.tech.slice(0, 3).map((tech, i) => (
-                          <span key={i} className="badge">{tech}</span>
-                        ))}
-                        {project.tech.length > 3 && (
-                          <span className="badge">+{project.tech.length - 3}</span>
-                        )}
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </div>
-
-          <Modal show={showModal} onHide={handleClose} centered size="lg" className="modern-modal">
-            <Modal.Header closeButton className="border-0 bg-transparent">
-              <Modal.Title className="text-center w-100">{selectedProject?.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="text-center">
-              {selectedProject?.video ? (
-                <div className="mb-3">
-                  <video
-                    src={selectedProject.video}
-                    controls
-                    className="img-fluid rounded-4"
-                    style={{ maxWidth: '100%', height: 'auto' }}
-                    poster={selectedProject?.images?.[0]}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                  <p className="text-muted mt-2">Demo video of the Computer Vision Application</p>
-                </div>
-              ) : selectedProject?.images && selectedProject.images.length > 1 ? (
-                <div className="carousel-container mb-3">
-                  <div className="carousel-inner position-relative">
-                    {selectedProject.images.map((image, index) => (
-                      <div key={index} className={`carousel-item ${index === currentSlide ? 'active' : ''}`}>
-                        <img
-                          src={image}
-                          alt={`${selectedProject?.title} ${index + 1}`}
-                          className="d-block w-100 rounded-4 cursor-pointer"
-                          style={{ cursor: 'pointer' }}
-                          onClick={handleImageClick}
-                        />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{
+                    display: 'flex',
+                    marginRight: '-0.5rem'
+                  }}>
+                    {[1,2,3].map(i => (
+                      <div key={i} style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        background: '#374151',
+                        border: '2px solid #050505',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '8px',
+                        color: 'white',
+                        marginRight: '-8px'
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                        </svg>
                       </div>
                     ))}
                   </div>
-                  <button
-                    className="carousel-control-prev"
-                    type="button"
-                    onClick={handlePrevSlide}
-                  >
-                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Previous</span>
-                  </button>
-                  <button
-                    className="carousel-control-next"
-                    type="button"
-                    onClick={handleNextSlide}
-                  >
-                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Next</span>
-                  </button>
-                  <div className="carousel-indicators">
-                    {selectedProject.images.map((_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => setCurrentSlide(index)}
-                        className={index === currentSlide ? 'active' : ''}
-                        aria-current={index === currentSlide ? 'true' : 'false'}
-                        aria-label={`Slide ${index + 1}`}
-                      ></button>
-                    ))}
+                  <span>Open to Remote</span>
+                </div>
+              </div>
+            </Col>
+
+            {/* --- RIGHT CONTENT: The Holographic Profile --- */}
+            <Col lg={5} className="d-none d-lg-block" style={{ position: 'relative' }}>
+              {/* Floating Elements (Background) */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  zIndex: 0,
+                  opacity: 0.6,
+                  transform: `translate(${mousePosition.x * -2}px, ${mousePosition.y * -2}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              >
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" style={{
+                  position: 'absolute',
+                  top: '-50px',
+                  right: '20px',
+                  transform: 'rotate(12deg)'
+                }}>
+                  <polyline points="4 17 10 11 4 5" />
+                  <line x1="12" y1="19" x2="20" y2="19" />
+                </svg>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="1.5" style={{
+                  position: 'absolute',
+                  bottom: '-50px',
+                  left: '-20px',
+                  transform: 'rotate(-12deg)'
+                }}>
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 16 16 12 12 8 8 12 12 16" />
+                </svg>
+              </div>
+
+              {/* The Glass Card Container with 3D Tilt */}
+              <div 
+                style={{
+                  position: 'relative',
+                  zIndex: 10,
+                  transform: `perspective(1000px) rotateX(${mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg)`,
+                  transition: 'transform 0.1s ease-out',
+                  transformStyle: 'preserve-3d'
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  padding: '8px',
+                  borderRadius: '32px',
+                  background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(40px)',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                }}>
+                  
+                  {/* Inner Image Frame */}
+                  <div style={{
+                    position: 'relative',
+                    borderRadius: '24px',
+                    overflow: 'hidden',
+                    aspectRatio: '4 / 5'
+                  }}>
+                    <img 
+                      src="/yoga.jpg" 
+                      alt="Yoga Krisna Utama" 
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.7s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                    />
+                    
+                    {/* Overlay Gradient */}
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(to top, #050505, rgba(5, 5, 5, 0.5), transparent)',
+                      opacity: 0.8
+                    }} />
+
+                    {/* Floating Info (Bottom) */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      width: '100%',
+                      padding: '1.5rem',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-end',
+                      transform: 'translateY(8px)',
+                      transition: 'transform 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(8px)'}
+                    >
+                      <div>
+                        <h3 style={{
+                          fontSize: '1.5rem',
+                          fontWeight: 'bold',
+                          color: 'white',
+                          marginBottom: '0.25rem'
+                        }}>Yoga K. Utama</h3>
+                        <p style={{
+                          color: '#60a5fa',
+                          fontSize: '0.875rem',
+                          fontWeight: 500
+                        }}>System Analyst & AI Dev</p>
+                      </div>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '50%',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        backdropFilter: 'blur(12px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                      }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17.77 14.85 18.92 21.95 12 18.27 5.08 21.95 6.23 14.85 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Floating Badge (GPA) - Efek Melayang di luar kartu */}
+                <div style={{
+                  position: 'absolute',
+                  right: '-24px',
+                  top: '48px',
+                  background: '#0f0f11',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  padding: '0.75rem',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  animation: 'float 4s ease-in-out infinite',
+                  zIndex: 20
+                }}>
+                  <div style={{
+                    background: 'rgba(34, 197, 94, 0.2)',
+                    padding: '0.5rem',
+                    borderRadius: '8px',
+                    color: '#22c55e'
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="19" cy="12" r="1" />
+                      <circle cx="5" cy="12" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                      <circle cx="17" cy="17" r="1" />
+                      <circle cx="7" cy="7" r="1" />
+                      <circle cx="17" cy="7" r="1" />
+                      <circle cx="7" cy="17" r="1" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: '#94a3b8',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}>GPA Score</div>
+                    <div style={{
+                      fontSize: '1.125rem',
+                      fontWeight: 'bold',
+                      color: 'white'
+                    }}>3.60 <span style={{ color: '#64748b', fontSize: '0.875rem' }}>/ 4.0</span></div>
                   </div>
                 </div>
-              ) : (
-                <img src={selectedProject?.images[0]} alt={selectedProject?.title} className="img-fluid rounded-4 mb-3" />
-              )}
-              <p className="mb-3">{selectedProject?.desc}</p>
-              <div className="d-flex justify-content-center flex-wrap gap-2 mb-3">
-                {selectedProject?.tech.map((tech, i) => (
-                  <span key={i} className="badge bg-primary">{tech}</span>
+
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* --- ABOUT SECTION --- */}
+      <section id="about" style={{ background: '#0f1419', position: 'relative' }}>
+        <Container>
+          <div style={{ marginBottom: '2rem' }}>
+            <span style={{ color: '#a1a1aa', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>
+              About Me
+            </span>
+            <h2 className="section-title" style={{ marginBottom: '0' }}>
+              The <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glass Architect</span>
+            </h2>
+          </div>
+
+          <div className="bento-grid" style={{ marginTop: '3rem' }}>
+            {/* Main Bio Card */}
+            <div className="bento-item glass-card" style={{ gridColumn: 'span 12' }} data-aos="fade-up">
+              <h3 className="about-heading">Who Am I?</h3>
+              <p className="about-text mt-3">
+                A passionate technology enthusiast from Gunadarma University with a 3.60 GPA. I don't just write code—
+                I solve real-world problems. My expertise bridges robust backend logic with interactive frontend interfaces,
+                enhanced with AI integration. I'm committed to continuous learning and creating digital solutions that matter.
+              </p>
+            </div>
+
+            {/* GPA KPI Card */}
+            <div className="bento-item glass-card" style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }} data-aos="fade-up" data-aos-delay="100">
+              <div className="about-stat">
+                <div className="about-stat-number">3.6</div>
+                <div className="about-stat-label">GPA Score</div>
+              </div>
+            </div>
+
+            {/* Experience Highlight */}
+            <div className="bento-item glass-card" style={{ gridColumn: 'span 4' }} data-aos="fade-up" data-aos-delay="150">
+              <h4 className="about-heading">Experience</h4>
+              <ul className="list-unstyled about-text mt-3">
+                <li className="mb-3"><strong>NFT Development</strong> • Web3 Project</li>
+                <li className="mb-3"><strong>Event Management</strong> • Provalliant</li>
+                <li><strong>KPPS Officer</strong> • 2024 Election</li>
+              </ul>
+            </div>
+
+            {/* Core Values / Mindset */}
+            <div className="bento-item glass-card" style={{ gridColumn: 'span 4' }} data-aos="fade-up" data-aos-delay="200">
+              <h4 className="about-heading">Core Values</h4>
+              <div className="d-flex gap-2 flex-wrap mt-3">
+                {['User-Centric', 'Clean Code', 'Scalable', 'Learning'].map(tag => (
+                  <span key={tag} className="skill-pill">{tag}</span>
                 ))}
               </div>
-              {selectedProject?.link && (
-                <div className="text-center">
-                  <a
-                    href={selectedProject.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-success"
-                  >
-                    🌐 View Live Demo
-                  </a>
-                </div>
-              )}
-            </Modal.Body>
-          </Modal>
-        </section>
-
-        {/* Skills section */}
-        <section
-          id="skills"
-          className="skills-section aos-section"
-          ref={el => (sectionRefs.current['skills'] = el)}
-          data-aos="fade-up"
-        >
-          <h2 className="section-title">Technical Skills</h2>
-          <div className="skills-container">
-            <div className="skills-category">
-              <h3>Programming Languages</h3>
-              <div className="skills-list">
-                <div className="skill-item">
-                  <span>Java <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>JavaScript <span className="skill-percentage">90%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>PHP <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>HTML5/CSS3 <span className="skill-percentage">95%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '95%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>SQL <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Python <span className="skill-percentage">70%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="skills-category">
-              <h3>Frameworks & Libraries</h3>
-              <div className="skills-list">
-                <div className="skill-item">
-                  <span>React.js <span className="skill-percentage">90%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Node.js <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Express.js <span className="skill-percentage">80%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '80%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Laravel <span className="skill-percentage">90%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Ruby on Rails <span className="skill-percentage">70%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="skills-category">
-              <h3>Computer Vision</h3>
-              <div className="skills-list">
-                <div className="skill-item">
-                  <span>OpenCV <span className="skill-percentage">75%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '75%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>YOLO <span className="skill-percentage">70%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Face & Emotion Detection <span className="skill-percentage">80%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '80%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="skills-category">
-              <h3>Tools & Technologies</h3>
-              <div className="skills-list">
-                <div className="skill-item">
-                  <span>Git/GitHub <span className="skill-percentage">90%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>MySQL <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Vite <span className="skill-percentage">85%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>VS Code <span className="skill-percentage">95%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '95%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Postman <span className="skill-percentage">80%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '80%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Laragon <span className="skill-percentage">75%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '75%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="skills-category">
-              <h3>Design Tools</h3>
-              <div className="skills-list">
-                <div className="skill-item">
-                  <span>Blender (3D Modeling) <span className="skill-percentage">70%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Adobe Illustrator (Vector Graphics) <span className="skill-percentage">75%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '75%' }}></div>
-                  </div>
-                </div>
-                <div className="skill-item">
-                  <span>Figma <span className="skill-percentage">80%</span></span>
-                  <div className="skill-bar">
-                    <div className="skill-level" style={{ width: '80%' }}></div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
-        </section>
-{/* Certificates Section */}
-        <section
-          id="certificates"
-          className="certificates-section aos-section"
-          ref={el => (sectionRefs.current['certificates'] = el)}
-          data-aos="fade-up"
-        >
-  <h2 className="section-title">Certificates</h2>
-  <div className="certificates-grid">
-    {certificates.map((cert, index) => (
-      <div
-        key={index}
-        className="certificate-image-card fade-in"
-        style={{ animationDelay: `${index * 0.08}s` }}
-        onClick={() => handleCertificateClick(cert)}
-      >
-        <div className="certificate-image-container">
-          <img
-            src={cert.image}
-            alt={cert.title}
-            className="certificate-image"
-            onError={(e) => {
-              e.target.src = '/placeholder-certificate.jpg';
+        </Container>
+      </section>
+
+      {/* --- PROJECTS SECTION --- */}
+      <section id="projects">
+        <Container>
+          {/* Header with GitHub Button */}
+          <div className="d-flex justify-content-between align-items-end mb-5">
+            <div>
+              <span style={{ color: '#a1a1aa', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>
+                Showcase
+              </span>
+              <h2 className="section-title mb-0">
+                Featured <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Projects</span>
+              </h2>
+            </div>
+            <a href="https://github.com/Babayaga4523" target="_blank" rel="noopener noreferrer" className="github-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V21" />
+              </svg>
+              View GitHub
+            </a>
+          </div>
+
+          {/* Projects Grid */}
+          <Row className="g-4">
+            {projects.map((project, idx) => (
+              <Col lg={4} md={6} key={idx}>
+                <div className="project-card glass-card" onClick={() => handleProjectClick(project)}>
+                  
+                  {/* Image Area */}
+                  <div className="card-image-wrapper">
+                    <img src={project.images[0]} alt={project.title} className="project-img" />
+                    <div className="img-overlay"></div>
+                    
+                    {/* Badge */}
+                    <div className="project-card-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 2L15.09 8.26H22L17.41 12.04L19.5 18.26L12 14.47L4.5 18.26L6.59 12.04L2 8.26H8.91L12 2Z" />
+                      </svg>
+                      {project.tech[0]}
+                    </div>
+
+                    {/* AI Badge for specific projects */}
+                    {(project.title.includes('Rental') || project.title.includes('Computer Vision')) && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 16,
+                        left: 16,
+                        background: 'rgba(168, 85, 247, 0.2)',
+                        backdropFilter: 'blur(12px)',
+                        color: '#c4b5fd',
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        padding: '6px 12px',
+                        borderRadius: '100px',
+                        border: '1px solid rgba(168, 85, 247, 0.4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        zIndex: 10,
+                        animation: 'pulse-glow 2s ease-in-out infinite'
+                      }}>
+                        ✨ AI Powered
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Area */}
+                  <div className="card-content">
+                    <div className="content-header">
+                      <h4 className="project-title">{project.title}</h4>
+                      <svg className="project-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M7 7h10v10M7 17L17 7" />
+                      </svg>
+                    </div>
+                    
+                    <p className="project-description">{project.desc}</p>
+                    
+                    <div className="project-tech">
+                      {project.tech.map((t, i) => (
+                        <span key={i}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
+      {/* --- SKILLS SECTION: TECH ECOSYSTEM --- */}
+      <section id="skills">
+        <Container>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative', zIndex: 2 }}>
+            <span style={{ color: '#6366f1', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
+              Expertise
+            </span>
+            <h2 className="section-title mb-0">
+              Technical <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Arsenal</span>
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '1rem', marginTop: '1rem', maxWidth: '600px', margin: '1rem auto 0', lineHeight: 1.6 }}>
+              A comprehensive suite of technologies optimized for scalable web applications and intelligent computer vision systems.
+            </p>
+          </div>
+
+          {/* Grid */}
+          <Row className="g-4" style={{ position: 'relative', zIndex: 2 }}>
+            {skillCategories.map((category, idx) => (
+              <Col lg={6} key={idx}>
+                <div className="skill-category">
+                  {/* Header with Icon */}
+                  <div className="skill-header">
+                    <div className="skill-icon-wrapper">
+                      {/* Icon based on category */}
+                      {idx === 0 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" style={{ width: '24px', height: '24px' }}>
+                          <path d="M12 2l9 5v9c0 5.55-4 10-9 11-5-1-9-5.45-9-11V7l9-5z" />
+                          <path d="M9 12l3 3 5-5" />
+                        </svg>
+                      )}
+                      {idx === 1 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" style={{ width: '24px', height: '24px' }}>
+                          <ellipse cx="12" cy="5" rx="9" ry="3" />
+                          <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+                          <path d="M3 12a9 3 0 0 0 18 0" />
+                        </svg>
+                      )}
+                      {idx === 2 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" style={{ width: '24px', height: '24px' }}>
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="19" cy="12" r="1" />
+                          <circle cx="5" cy="12" r="1" />
+                          <circle cx="12" cy="19" r="1" />
+                          <circle cx="12" cy="5" r="1" />
+                          <circle cx="17" cy="17" r="1" />
+                          <circle cx="7" cy="7" r="1" />
+                          <circle cx="17" cy="7" r="1" />
+                          <circle cx="7" cy="17" r="1" />
+                        </svg>
+                      )}
+                      {idx === 3 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#f472b6" strokeWidth="2" style={{ width: '24px', height: '24px' }}>
+                          <path d="M12 2v20M2 12h20" />
+                          <circle cx="12" cy="12" r="1" />
+                          <path d="M7 7h10v10H7z" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="skill-header-text">
+                      <h4 className="skill-category-title">{category.title}</h4>
+                      <p className="skill-category-desc">{idx === 0 ? 'Building immersive & responsive UIs' : idx === 1 ? 'Scalable logic & secure APIs' : idx === 2 ? 'Computer Vision & Intelligent Systems' : 'DevOps, Version Control & Design'}</p>
+                    </div>
+                  </div>
+
+                  {/* Skills */}
+                  <div className="skill-items">
+                    {category.skills.map((skill, i) => (
+                      <span key={i} className="skill-item">{skill}</span>
+                    ))}
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
+      {/* --- CERTIFICATES SECTION: "The Trust Vault" --- */}
+      <section id="certificates">
+        <Container>
+          {/* Header Section */}
+          <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative', zIndex: 2 }}>
+            <span style={{ color: '#6366f1', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
+              Qualifications
+            </span>
+            <h2 className="section-title mb-0">
+              Certified <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Expertise</span>
+            </h2>
+          </div>
+
+          {/* Certificate Cards Grid */}
+          <Row className="g-4" style={{ position: 'relative', zIndex: 2 }}>
+            {certificates.map((cert, idx) => (
+              <Col lg={4} md={6} key={idx} className="d-flex">
+                <div 
+                  className="cert-card group w-100"
+                  onClick={() => handleCertificateClick(cert)}
+                  role="button"
+                  tabIndex="0"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    background: 'rgba(15, 23, 42, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.5)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(99, 102, 241, 0.2)';
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  {/* Certificate Image */}
+                  <div style={{
+                    width: '100%',
+                    height: '200px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    background: '#1e293b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <img 
+                      src={cert.image}
+                      alt={cert.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease-out'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = 'scale(1.08)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'scale(1)';
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+
+                  {/* Certificate Info */}
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#6366f1', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {cert.type}
+                    </div>
+                    <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: 'white', lineHeight: 1.4, marginBottom: '1rem', transition: 'color 0.3s ease' }} className="cert-title">
+                      {cert.title}
+                    </h4>
+                    <p style={{ fontSize: '0.875rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0, flexWrap: 'wrap', marginTop: 'auto' }}>
+                      <span>{cert.issuer}</span>
+                      <span style={{ width: '4px', height: '4px', background: '#475569', borderRadius: '50%' }} />
+                      <span>{cert.date}</span>
+                    </p>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
+      {/* --- CONTACT SECTION: "The Portal" --- */}
+      <section id="contact">
+        <Container>
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              {/* Premium Glass Panel */}
+              <div className="contact-glass-panel">
+                {/* Glowing Border Animation */}
+                <div className="contact-border-glow"></div>
+
+                {/* Content */}
+                <div style={{ position: 'relative', zIndex: 10, padding: '4rem 2rem' }}>
+                  <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', marginBottom: '1.5rem', textAlign: 'center', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+                    Let's Build Something <br />
+                    <span style={{ background: 'linear-gradient(135deg, #60a5fa, #c084fc, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', backgroundSize: '200% auto' }}>
+                      Extraordinary.
+                    </span>
+                  </h2>
+                  
+                  <p style={{ fontSize: '1.125rem', color: '#cbd5e1', marginBottom: '2.5rem', textAlign: 'center', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
+                    Whether it's an AI-integrated platform, a full-stack application, or an innovative Web3 project, 
+                    I'm ready to bring your vision to life. Let's create something remarkable together.
+                  </p>
+
+                  {/* Main Action Buttons */}
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', marginBottom: '3rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                    <button 
+                      onClick={handleCopyEmail}
+                      className="contact-btn-primary"
+                      style={{
+                        background: copied ? '#10b981' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                        color: 'white'
+                      }}
+                    >
+                      {copied ? (
+                        <>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          Email Copied!
+                        </>
+                      ) : (
+                        <>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <path d="M22 6l-10 7L2 6" />
+                          </svg>
+                          Copy Email Address
+                        </>
+                      )}
+                    </button>
+
+                    <a 
+                      href="https://wa.me/6281294743876?text=Hi%20Yoga" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="contact-btn-secondary"
+                    >
+                      <FaWhatsapp size={20} />
+                      Chat on WhatsApp
+                    </a>
+                  </div>
+
+                  {/* Footer Social Links */}
+                  <div className="contact-social-links">
+                    {[
+                      { 
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                          </svg>
+                        ),
+                        href: 'https://linkedin.com/in/yoga-utama',
+                        label: 'LinkedIn'
+                      },
+                      {
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                          </svg>
+                        ),
+                        href: 'https://github.com/Babayaga4523',
+                        label: 'GitHub'
+                      }
+                    ].map((social, i) => (
+                      <a 
+                        key={i}
+                        href={social.href} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="social-icon-link"
+                      >
+                        <div className="social-icon-wrapper">
+                          {social.icon}
+                        </div>
+                        <span className="social-label">{social.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Copyright Footer */}
+              <div className="contact-copyright">
+                © {new Date().getFullYear()} Yoga Krisna Utama. All rights reserved.
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* --- PROJECT MODAL: Mini Case Study --- */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="xl" contentClassName="glass-modal-content" dialogClassName="modal-dialog-custom">
+        <div style={{ position: 'relative' }}>
+          {/* Custom Close Button */}
+          <button 
+            onClick={() => setShowModal(false)}
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              zIndex: 50,
+              padding: '0.5rem',
+              borderRadius: '50%',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '40px',
+              height: '40px'
             }}
-          />
-          <div className="certificate-overlay">
-            <div className="certificate-info">
-              <h4>{cert.title}</h4>
-              <p>{cert.issuer}</p>
-              <span className="view-details">Click to view details</span>
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'rgba(0, 0, 0, 0.5)';
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          
+          {/* HERO IMAGE/VIDEO SECTION WITH CAROUSEL */}
+          {selectedProject && (
+            <>
+              <div style={{
+                position: 'relative',
+                height: '300px',
+                width: '100%',
+                overflow: 'hidden',
+                borderRadius: '24px 24px 0 0'
+              }}>
+                {/* Dark gradient overlay */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(to top, #050505, transparent)',
+                  zIndex: 10
+                }} />
+                
+                {/* Video Player for Computer Vision Project */}
+                {selectedProject.video ? (
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: '#000'
+                  }}>
+                    <VideoPlayer src={selectedProject.video} />
+                  </div>
+                ) : (
+                  <>
+                    {/* Carousel for Images */}
+                    {selectedProject.images && selectedProject.images.length > 0 ? (
+                      <>
+                        <img 
+                          src={selectedProject.images[currentImageIndex]} 
+                          alt={`${selectedProject.title} - ${currentImageIndex + 1}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            imageRendering: 'crisp-edges',
+                            filter: 'contrast(1.1) brightness(1.05) saturate(1.1)',
+                            WebkitImageRendering: 'auto'
+                          }}
+                        />
+                        
+                        {/* Carousel Navigation - Previous */}
+                        {selectedProject.images.length > 1 && (
+                          <button
+                            onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? selectedProject.images.length - 1 : prev - 1))}
+                            style={{
+                              position: 'absolute',
+                              left: '1.5rem',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              zIndex: 20,
+                              padding: '0.75rem',
+                              borderRadius: '50%',
+                              background: 'rgba(0, 0, 0, 0.6)',
+                              color: 'white',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              backdropFilter: 'blur(8px)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: '40px',
+                              height: '40px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = 'rgba(0, 0, 0, 0.6)';
+                            }}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                          </button>
+                        )}
+                        
+                        {/* Carousel Navigation - Next */}
+                        {selectedProject.images.length > 1 && (
+                          <button
+                            onClick={() => setCurrentImageIndex((prev) => (prev === selectedProject.images.length - 1 ? 0 : prev + 1))}
+                            style={{
+                              position: 'absolute',
+                              right: '1.5rem',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              zIndex: 20,
+                              padding: '0.75rem',
+                              borderRadius: '50%',
+                              background: 'rgba(0, 0, 0, 0.6)',
+                              color: 'white',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              backdropFilter: 'blur(8px)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: '40px',
+                              height: '40px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = 'rgba(0, 0, 0, 0.6)';
+                            }}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                          </button>
+                        )}
+                        
+                        {/* Image Counter */}
+                        {selectedProject.images.length > 1 && (
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '1.5rem',
+                            right: '1.5rem',
+                            zIndex: 20,
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            color: 'white',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '50px',
+                            fontSize: '0.875rem',
+                            fontWeight: 'bold',
+                            backdropFilter: 'blur(8px)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)'
+                          }}>
+                            {currentImageIndex + 1} / {selectedProject.images.length}
+                          </div>
+                        )}
+                      </>
+                    ) : null}
+                  </>
+                )}
+                
+                {/* Floating Category Badge */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '1.5rem',
+                  left: '1.5rem',
+                  zIndex: 20
+                }}>
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '0.5rem 0.75rem',
+                    borderRadius: '50px',
+                    fontSize: '0.75rem',
+                    fontWeight: 'bold',
+                    background: '#6366f1',
+                    color: 'white',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    boxShadow: '0 8px 16px rgba(99, 102, 241, 0.3)'
+                  }}>
+                    {selectedProject.video ? 'Computer Vision' : 'Web Development'}
+                  </span>
+                </div>
+              </div>
+
+              {/* CONTENT BODY */}
+              <div style={{
+                padding: '2rem',
+                background: '#050505'
+              }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '2rem'
+                }}>
+                  
+                  {/* Left Column: Details */}
+                  <div style={{ minWidth: 0, gridColumn: 'span 2' }}>
+                    <h2 style={{
+                      fontSize: '1.875rem',
+                      fontWeight: 'bold',
+                      color: 'white',
+                      marginBottom: '1rem',
+                      letterSpacing: '-0.02em'
+                    }}>
+                      {selectedProject.title}
+                    </h2>
+                    <p style={{
+                      color: '#a1a1aa',
+                      lineHeight: 1.7,
+                      fontSize: '1rem',
+                      marginBottom: '1.5rem'
+                    }}>
+                      {selectedProject.desc}
+                    </p>
+                    
+                    {/* Key Features */}
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      border: '1px solid rgba(255, 255, 255, 0.05)',
+                      marginTop: '1.5rem'
+                    }}>
+                      <h5 style={{
+                        color: 'white',
+                        fontWeight: 600,
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Key Features
+                      </h5>
+                      <ul style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '0.75rem',
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: 0
+                      }}>
+                        {['Responsive Design', 'Real-time Data', 'Secure Auth', 'Performance Optimized'].map((feat, i) => (
+                          <li key={i} style={{
+                            color: '#a1a1aa',
+                            fontSize: '0.875rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                          }}>
+                            <span style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              background: '#6366f1'
+                            }} />
+                            {feat}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Sidebar Info */}
+                  <div style={{ minWidth: 0 }}>
+                    {/* Tech Stack */}
+                    <div style={{ marginBottom: '2rem' }}>
+                      <h5 style={{
+                        color: 'white',
+                        fontWeight: 600,
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
+                          <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />
+                          <line x1="12" y1="12" x2="20" y2="7.5" />
+                          <line x1="12" y1="12" x2="12" y2="21" />
+                          <line x1="12" y1="12" x2="4" y2="7.5" />
+                        </svg>
+                        Tech Stack
+                      </h5>
+                      <div style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem'
+                      }}>
+                        {selectedProject.tech?.map((t, i) => (
+                          <span key={i} style={{
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '8px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            fontSize: '0.75rem',
+                            color: '#cbd5e1',
+                            fontFamily: 'Courier New, monospace',
+                            fontWeight: 500
+                          }}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.75rem',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}>
+                      {selectedProject.link && (
+                        <a 
+                          href={selectedProject.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            padding: '0.75rem 1rem',
+                            borderRadius: '12px',
+                            background: '#6366f1',
+                            color: 'white',
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            border: 'none'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#4f46e5';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 16px rgba(99, 102, 241, 0.3)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = '#6366f1';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                          </svg>
+                          Visit Live Demo
+                        </a>
+                      )}
+                      <button
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '12px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          fontWeight: 600,
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        }}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V21" />
+                        </svg>
+                        View Source
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
+      {/* --- CERTIFICATE MODAL: Digital Credential Card --- */}
+      <Modal show={showCertificateModal} onHide={() => setShowCertificateModal(false)} centered size="lg" contentClassName="certificate-modal-content">
+        <div className="certificate-wrapper">
+          
+          {/* --- Close Button (Floating) --- */}
+          <button onClick={() => setShowCertificateModal(false)} className="cert-close-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          <div className="certificate-layout">
+            
+            {/* --- LEFT SIDE: Visual Showcase --- */}
+            <div className="cert-visual-section">
+              {selectedCertificate && (
+                <>
+                  <div className="cert-image-container">
+                    {/* Glow Effect di belakang gambar */}
+                    <div className="cert-glow"></div>
+                    <img 
+                      src={selectedCertificate.image} 
+                      alt={selectedCertificate.title} 
+                      className="cert-img" 
+                    />
+                  </div>
+                  
+                  {/* Action Bar (Optional) */}
+                  <div className="cert-actions">
+                    <button className="action-pill">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline' }}>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                      Verify Credential
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* --- RIGHT SIDE: Data Manifest --- */}
+            <div className="cert-info-section">
+              
+              {selectedCertificate && (
+                <>
+                  {/* Header: Issuer */}
+                  <div className="cert-header">
+                    <div className="issuer-badge">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#a78bfa' }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8 14 12 17 16 14" />
+                      </svg>
+                      <span>{selectedCertificate.issuer}</span>
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="cert-title">{selectedCertificate.title}</h2>
+                  <p className="cert-desc">{selectedCertificate.description || "Credential verified for proficiency in subject matter."}</p>
+
+                  {/* Metadata Grid */}
+                  <div className="cert-meta-grid">
+                    {/* Issued Date */}
+                    <div className="meta-item">
+                      <div className="meta-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="meta-label">Issued On</div>
+                        <div className="meta-value">{selectedCertificate.date}</div>
+                      </div>
+                    </div>
+                    
+                    {/* Credential ID */}
+                    <div className="meta-item">
+                      <div className="meta-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <text x="12" y="16" textAnchor="middle" fontSize="8" fill="currentColor">#</text>
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="meta-label">Credential ID</div>
+                        <div className="meta-value font-mono">
+                          CERT-{Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Verification Footer */}
+                  <div className="cert-footer">
+                    <div className="verified-seal">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#10b981' }}>
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <polyline points="9 12 12 15 15 10" />
+                      </svg>
+                      <div>
+                        <div className="seal-title">Authentic Certificate</div>
+                        <div className="seal-subtitle">Verified & Authenticated</div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
             </div>
           </div>
         </div>
-      </div>
-    ))}
-  </div>
-
-  {/* Certificate Modal */}
-  <Modal show={showCertificateModal} onHide={handleCertificateClose} centered size="xl" className="certificate-modal">
-    <Modal.Header closeButton className="border-0 bg-transparent">
-      <Modal.Title className="text-center w-100">{selectedCertificate?.title}</Modal.Title>
-    </Modal.Header>
-    <Modal.Body className="text-center">
-      <div className="certificate-modal-image">
-        <img
-          src={selectedCertificate?.image}
-          alt={selectedCertificate?.title}
-          className="img-fluid rounded-4 mb-4"
-          onError={(e) => {
-            e.target.src = '/placeholder-certificate.jpg';
-          }}
-        />
-      </div>
-      <div className="certificate-modal-details">
-        <div className="certificate-meta mb-3">
-          <span className="badge bg-primary me-2">{selectedCertificate?.issuer}</span>
-          <span className="badge bg-secondary">{selectedCertificate?.date}</span>
-        </div>
-        <p className="certificate-description">{selectedCertificate?.description}</p>
-      </div>
-    </Modal.Body>
-  </Modal>
-</section>
-
-        {/* Contact section */}
-        <section
-          id="contact"
-          className="contact-section aos-section"
-          ref={el => (sectionRefs.current['contact'] = el)}
-          data-aos="fade-up"
-        >
-          <h2 className="section-title">Get In Touch</h2>
-          <div className="contact-content">
-            <div className="contact-info">
-              <h3>Contact Information</h3>
-              <div className="info-item">
-                <span className="info-icon"><MdEmail /></span>
-                <span>Yogacode86@gmail.com</span>
-              </div>
-              <div className="info-item">
-                <span className="info-icon"><MdPhone /></span>
-                <span>+6281294743876</span>
-              </div>
-              <div className="info-item">
-                <span className="info-icon"><MdLocationOn /></span>
-                <span>North Bekasi, Indonesia</span>
-              </div>
-              <div className="social-links">
-                <a href="https://linkedin.com/in/Yoga-Utama" target="_blank" rel="noopener noreferrer">
-                  <FaLinkedin /> LinkedIn
-                </a>
-                <a href="https://github.com/Babayaga4523" target="_blank" rel="noopener noreferrer">
-                  <FaGithub /> GitHub
-                </a>
-              </div>
-            </div>
-            <form className="contact-form" onSubmit={handleWhatsAppSend}>
-              <div className="form-group">
-                <input type="text" name="name" placeholder="Your Name" required />
-              </div>
-              <div className="form-group">
-                <input type="email" name="email" placeholder="Your Email" required />
-              </div>
-              <div className="form-group">
-                <input type="text" name="subject" placeholder="Subject" required />
-              </div>
-              <div className="form-group">
-                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-              </div>
-              <button type="submit" className="submit-btn">Send Message</button>
-            </form>
-          </div>
-        </section>
-      </main>
-      {/* ...existing code... */}
+      </Modal>
     </div>
   );
 };
 
 export default App;
+
