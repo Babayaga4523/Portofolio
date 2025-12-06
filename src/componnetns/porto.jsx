@@ -599,19 +599,63 @@ const App = () => {
       </section>
 
       {/* --- ABOUT SECTION --- */}
-      <section id="about" style={{ background: '#0f1419', position: 'relative' }}>
-        <Container>
-          <div style={{ marginBottom: '2rem' }}>
-            <span style={{ color: '#a1a1aa', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>
-              About Me
-            </span>
-            <h2 className="section-title" style={{ marginBottom: '0' }}>
-              The <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glass Architect</span>
-            </h2>
-          </div>
+        <section id="about" style={{ background: '#0f1419', position: 'relative' }}>
+          <Container>
+            <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+              {/* Status Badge */}
+              <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          paddingTop: '0.5rem',
+          paddingBottom: '0.5rem',
+          borderRadius: '100px',
+          background: 'rgba(99, 102, 241, 0.1)',
+          border: '1px solid rgba(99, 102, 241, 0.3)',
+          backdropFilter: 'blur(12px)',
+          marginBottom: '1rem'
+              }}>
+          <span style={{
+            position: 'relative',
+            display: 'flex',
+            height: '8px',
+            width: '8px'
+          }}>
+            <span style={{
+              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              background: '#6366f1',
+              opacity: 0.75
+            }} />
+            <span style={{
+              position: 'relative',
+              display: 'flex',
+              borderRadius: '50%',
+              height: '8px',
+              width: '8px',
+              background: '#6366f1'
+            }} />
+          </span>
+          <span style={{
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            color: '#a5b4fc',
+            letterSpacing: '0.05em'
+          }}>Information Systems Graduate</span>
+              </div>
 
-          <div className="bento-grid" style={{ marginTop: '3rem' }}>
-            {/* Main Bio Card */}
+              <h2 className="section-title" style={{ marginBottom: '0' }}>
+          About <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Me</span>
+              </h2>
+              <span style={{ color: '#a1a1aa', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>introduction</span>
+            </div>
+
+            <div className="bento-grid" style={{ marginTop: '3rem' }}>
+          {/* Main Bio Card */}
             <div className="bento-item glass-card" style={{ gridColumn: 'span 12' }} data-aos="fade-up">
               <h3 className="about-heading">Who Am I?</h3>
               <p className="about-text mt-3">
@@ -656,11 +700,52 @@ const App = () => {
       <section id="projects">
         <Container>
           {/* Header with GitHub Button */}
-          <div className="d-flex justify-content-between align-items-end mb-5">
-            <div>
-              <span style={{ color: '#a1a1aa', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>
-                Showcase
-              </span>
+          <div className="d-flex justify-content-center align-items-center mb-5 flex-column">
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                paddingLeft: '1rem',
+                paddingRight: '1rem',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+                borderRadius: '100px',
+                background: 'rgba(99, 102, 241, 0.1)',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                backdropFilter: 'blur(12px)',
+                marginBottom: '1rem'
+              }}>
+                <span style={{
+                  position: 'relative',
+                  display: 'flex',
+                  height: '8px',
+                  width: '8px'
+                }}>
+                  <span style={{
+                    animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: '50%',
+                    background: '#6366f1',
+                    opacity: 0.75
+                  }} />
+                  <span style={{
+                    position: 'relative',
+                    display: 'flex',
+                    borderRadius: '50%',
+                    height: '8px',
+                    width: '8px',
+                    background: '#6366f1'
+                  }} />
+                </span>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#a5b4fc',
+                  letterSpacing: '0.05em'
+                }}>Showcase</span>
+              </div>
               <h2 className="section-title mb-0">
                 Featured <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Projects</span>
               </h2>
