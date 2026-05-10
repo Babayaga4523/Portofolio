@@ -2,14 +2,17 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Github, X, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, Github, X, ChevronLeft, ChevronRight, ExternalLink, Play, Image } from 'lucide-react';
 
 export default function ProjectCard({ project, index = 0 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
+  const [activeTab, setActiveTab] = useState('images'); // 'images' | 'video'
+  const hasVideo = Boolean(project.video);
 
   const openModal = () => {
     setCurrentImg(0);
+    setActiveTab('images');
     setModalOpen(true);
   };
 
@@ -60,12 +63,21 @@ export default function ProjectCard({ project, index = 0 }) {
             </div>
           )}
 
-          {/* Image count badge */}
-          {project.images.length > 1 && (
-            <div className="absolute bottom-4 left-4 bg-navy/70 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
-              {project.images.length} photos
-            </div>
-          )}
+          {/* Media badges */}
+          <div className="absolute bottom-4 left-4 flex gap-2">
+            {project.images.length > 1 && (
+              <div className="bg-navy/70 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                <Image className="w-3 h-3" />
+                {project.images.length}
+              </div>
+            )}
+            {hasVideo && (
+              <div className="bg-gold/90 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                <Play className="w-3 h-3 fill-white" />
+                Video
+              </div>
+            )}
+          </div>
 
           {/* Arrow Icon on Hover */}
           <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-white/95 flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
@@ -146,60 +158,102 @@ export default function ProjectCard({ project, index = 0 }) {
               className="bg-white rounded-3xl overflow-hidden w-full max-w-5xl max-h-[92vh] flex flex-col lg:flex-row shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* ── LEFT: Image Gallery ── */}
+              {/* ── LEFT: Media Gallery ── */}
               <div
-                className="relative bg-cream-alt flex-shrink-0 lg:w-[55%] overflow-hidden"
-                style={{ maxHeight: 'min(45vh, 400px)' }}
+                className="relative bg-navy flex-shrink-0 lg:w-[55%] overflow-hidden flex flex-col"
+                style={{ minHeight: 220, maxHeight: 'min(50vh, 440px)' }}
               >
-                <div className="w-full h-full relative" style={{ minHeight: 220 }}>
-                  <img
-                    src={project.images[currentImg]}
-                    alt={`${project.title} screenshot ${currentImg + 1}`}
-                    className="w-full h-full object-cover"
-                    style={{ maxHeight: 'min(45vh, 400px)', minHeight: 220 }}
-                  />
+                {/* Tab switcher — only shown when project has video */}
+                {hasVideo && (
+                  <div className="flex flex-shrink-0 border-b border-white/10">
+                    <button
+                      onClick={() => setActiveTab('images')}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors ${
+                        activeTab === 'images' ? 'text-gold border-b-2 border-gold' : 'text-white/50 hover:text-white/80'
+                      }`}
+                    >
+                      <Image className="w-3.5 h-3.5" />
+                      Screenshots
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('video')}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors ${
+                        activeTab === 'video' ? 'text-gold border-b-2 border-gold' : 'text-white/50 hover:text-white/80'
+                      }`}
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      Video Demo
+                    </button>
+                  </div>
+                )}
 
-                  {/* Close Button */}
+                {/* Media area */}
+                <div className="relative flex-1 min-h-0">
+
+                  {/* ── Screenshots view ── */}
+                  {activeTab === 'images' && (
+                    <div className="w-full h-full relative" style={{ minHeight: 200 }}>
+                      <img
+                        src={project.images[currentImg]}
+                        alt={`${project.title} screenshot ${currentImg + 1}`}
+                        className="w-full h-full object-cover"
+                        style={{ maxHeight: 'min(50vh, 400px)', minHeight: 200 }}
+                      />
+
+                      {project.images.length > 1 && (
+                        <>
+                          <button
+                            onClick={prevImg}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow hover:bg-gold hover:text-white transition-colors"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={nextImg}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow hover:bg-gold hover:text-white transition-colors"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            {project.images.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={(e) => { e.stopPropagation(); setCurrentImg(i); }}
+                                className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImg ? 'bg-gold w-5' : 'bg-white/60 w-1.5'}`}
+                              />
+                            ))}
+                          </div>
+                          <div className="absolute top-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                            {currentImg + 1}/{project.images.length}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── Video view ── */}
+                  {activeTab === 'video' && hasVideo && (
+                    <div className="w-full h-full flex items-center justify-center bg-black" style={{ minHeight: 200 }}>
+                      <video
+                        key={project.video}
+                        controls
+                        autoPlay={false}
+                        className="max-w-full max-h-full"
+                        style={{ maxHeight: 'min(50vh, 400px)' }}
+                      >
+                        <source src={project.video} type="video/mp4" />
+                        Browser Anda tidak mendukung video.
+                      </video>
+                    </div>
+                  )}
+
+                  {/* Close Button — always visible */}
                   <button
                     onClick={closeModal}
-                    className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-gold hover:text-white transition-colors z-10"
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center shadow hover:bg-gold hover:text-white transition-colors z-20"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4 text-white" />
                   </button>
-
-                  {/* Nav Arrows */}
-                  {project.images.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevImg}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-gold hover:text-white transition-colors"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={nextImg}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-gold hover:text-white transition-colors"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-
-                      {/* Dots */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                        {project.images.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={(e) => { e.stopPropagation(); setCurrentImg(i); }}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImg ? 'bg-gold w-5' : 'bg-white/70 w-1.5'}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Image counter */}
-                      <div className="absolute top-4 left-4 bg-navy/60 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
-                        {currentImg + 1}/{project.images.length}
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
 
