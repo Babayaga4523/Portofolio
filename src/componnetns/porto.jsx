@@ -1260,13 +1260,13 @@ const Portofolio = () => {
       </NativeModal>
 
       {/* ════════════════════ CERTIFICATE MODAL ════════════════════ */}
-      <NativeModal show={showCertModal} onClose={() => setShowCertModal(false)} maxWidth={680}>
+      <NativeModal show={showCertModal} onClose={() => setShowCertModal(false)} maxWidth={840}>
         {selectedCertificate && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 overflow-hidden" style={{ maxHeight: '90vh' }}>
-            <div className="bg-[#181824] flex flex-col justify-between overflow-hidden p-4">
-              <div className="relative flex-1 overflow-hidden rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 overflow-hidden bg-[#10101A]" style={{ maxHeight: '90vh' }}>
+            <div className="bg-[#07070D] flex flex-col justify-between overflow-hidden p-4 border-b sm:border-b-0 sm:border-r border-white/10">
+              <div className="relative flex-1 overflow-hidden rounded-xl bg-[#08080E] flex items-center justify-center p-2 min-h-[260px]">
                 <img src={selectedCertificate.image} alt={selectedCertificate.title}
-                     className="w-full h-full object-cover" loading="lazy" />
+                     className="w-full h-full object-contain" loading="lazy" />
               </div>
               <div className="pt-4">
                 <a href={selectedCertificate.pdf || selectedCertificate.image}
