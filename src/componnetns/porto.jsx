@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './porto.css';
 import {
   FaWhatsapp, FaGithub, FaLinkedin, FaPython, FaJs, FaHtml5, FaCss3Alt,
-  FaReact, FaNodeJs, FaLaravel, FaPhp, FaDatabase, FaGitAlt, FaBootstrap, FaFigma, FaDocker, FaCloud
+  FaReact, FaNodeJs, FaLaravel, FaPhp, FaDatabase, FaFigma, FaDocker, FaCloud
 } from 'react-icons/fa';
 import { SiPostgresql, SiMysql, SiRubyonrails, SiNextdotjs, SiTailwindcss, SiStreamlit } from 'react-icons/si';
 
@@ -58,11 +58,6 @@ const IconMail = () => (
 const IconCheck = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
     <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-const IconSparkles = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
   </svg>
 );
 
